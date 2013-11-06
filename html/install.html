@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>SockHop Installation Page</TITLE>
+</HEAD>
+<BODY>
+<B><U>How to manually install SockHop</U></B>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp; To install SockHop automatically, just unzip
+the SockHop archive and run Install_SockHop.sh from a Terminal window.
+<BR>&nbsp;
+<BR>&nbsp;&nbsp;&nbsp;&nbsp; To install SockHop by hand, the following
+steps must be taken:
+<UL>
+<LI>
+Copy the file SockHop/libsockhop.so.x86 (or SockHop/libsockhop.so.ppc)
+to /boot/home/config/lib.</LI>
+
+<LI>
+If you want to start the accepting SockHop connections right away, run
+libsockhop.so (yes, that's right, execute the library file!) in a shell.&nbsp;
+Doing so will start up a SockHop server on your machine.&nbsp; For more
+instructions on command line parameters, and how to use the SockHop server,
+look <A HREF="sockhopserver.html">here</A>. If you want the SockHop server
+to be automatically launched on startup, you can put it in your UserBootScript
+(be sure to have it run in the background, be sure you know the security
+issues involved, and be sure its current directory is okay to write files
+onto!)</LI>
+</UL>
+
+
+<P>Also:&nbsp; If the computer you are installing to is to be used to compile
+SockHop programs, you should copy the include directory SockHop/include/sockhop
+to somewhere convenient (perhaps to /develop/headers).&nbsp; The "sockhop"
+directory contains all the .h files you will need to use SockHop classes.
+
+<P>&nbsp;<A HREF="index.html">Back to Top</A>
+</BODY>
+</HTML>

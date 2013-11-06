@@ -1,0 +1,144 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>The SHDirectConnection API</TITLE>
+</HEAD>
+<BODY>
+<B><U>SHDirectConnection API</U></B>
+<BR>&nbsp;
+<BR>The SHDirectConnection class is a utility class for creating BMessage
+pathways directly between two programs.&nbsp; In most cases, creating an
+SHDirectConnection isn't necessary, because you can use SockHop's regular
+message routing services or <A HREF="sh_commands.html#addcomponents">symlinking</A>
+to send BMessages down the tree to your code.&nbsp; In a few cases, however,
+an SHDirectConnection can come in handy.&nbsp; For example, if you want
+to be able to communicate with the SockHop tree from SockHop-based programs
+that aren't actually part of the tree, then an SHDirectConnection is a
+good way to do it.
+
+<P>SHDirectConnection objects can both initiate and receive TCP connections,
+based on the arguments you give to their constructor.&nbsp; Typically one
+program will create a "passive" SHDirectConnection, and then wait for the
+other program to create an "active" SHDirectConnection to connect to it.&nbsp;
+Note that SHDirectConnections can only connect to passive SHDirectConnections
+or <A HREF="sessionacceptor.html">SHSessionAcceptors</A>; they cannot be
+used to connect directly to SockHop servers, Web servers, or anything else.
+
+<P>Methods in the SHDirectConnection API are:
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHDirectConnection(const BMessenger &amp; target, const <A HREF="shnodespecs.html">SHNodeSpec</A>
+&amp; connectTo, bool startThreadsNow, int32 threadPriority = B_NORMAL_PRIORITY,
+int32 encoding = SH_ENCODING_NONE);</B>
+
+<P>This constructor creates an "active" SHDirectConnection, which will
+try to connect to an <A HREF="sessionacceptor.html">SHSessionAcceptor</A>
+or passive SHDirectConnection that is running at the location specified
+by (connectTo).&nbsp; Once connected, an SH_CODE_CONNECTIONOPEN BMessage
+will be sent to (target).&nbsp; If the connectee sends any BMessages back
+across the connection, they will also be forwarded to (target).&nbsp; Finally,
+when the connection is closed, an SH_CODE_CONNECTIONCLOSED BMessage will
+be sent to (target) to notify it.
+
+<P>If (startThreadsNow) is specified to be false, the internal threads
+of the SHDirectConnection will not be spawned automatically.&nbsp; The
+SHDirectConnection object will thus not do anything until you call the
+Start() method on it.
+
+<P>(threadPriority) and (encoding) allow you to set the thread priority
+of the send and receive threads, and the encoding of outgoing BMessages,
+respectively.&nbsp; (encoding) should be one of the SH_ENCODING_* constants
+specified in SockHopConstants.h.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHDirectConnection(const BMessenger &amp; target, SHAccessPolicy
+* policy, bool startThreadsNow);</B>
+
+<P>This constructor creates a "passive" SHDirectConnection, which will
+bind to a port and await a connection from another SHDirectConnection object.&nbsp;
+(policy) determines which port it will bind to, and which connections it
+will allow itself to receive.&nbsp; (target) and (startThreadsNow) have
+the same meanings as in the "active" SHDirectConnection constructor (see
+above).
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual ~SHDirectConnection()</B>
+
+<P>The destructor closes the TCP connection (if it was open) and destroys
+the SHDirectConnection object.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>bool Start()</B>
+
+<P>Spawns the internal threads for this object.&nbsp; You only need to
+call this if you set (startThreadsNow) to false in the constructor.&nbsp;
+This method returns true on success, false if there was an error setting
+up.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>BMessenger GetMessenger() const</B>
+
+<P>If you want to send BMessages over the SHDirectConnection, you can do
+so by sending them to the BMessenger that this method returns.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>int32 GetId() const</B>
+
+<P>Returns a unique (to the local address space, anyway) ID number for
+this SHDirectConnection object.&nbsp; This ID number will be added to the
+SH_NAME_CONNECTIONID field of each BMessage this SHDirectConnection sends
+to the target you specified in the constructor, so that you can figure
+out which SHDirectConnection the BMessage came from..
+<BR>&nbsp;
+<BR>
+<HR WIDTH="100%">
+<BR><B><A HREF="shnodespecs.html">SHNodeSpec</A> GetNodeSpec() const</B>
+
+<P>Returns the <A HREF="shnodespecs.html">SHNodeSpec</A> for thie SHDirectConnection.&nbsp;
+For "active" connections, it will be the same as the (spec) that was passed
+to the constructor.&nbsp; For passive connections, the port number may
+have changed (to zero if there was an error, or to non-zero if it was passed
+as zero, allowing the system to choose a port)
+<BR>&nbsp;
+<BR>
+<HR WIDTH="100%">
+<BR><B>BMessage &amp; GetUserMessage()</B>
+
+<P>Returns a BMessage that is held by this SHDirectConnectionObject.&nbsp;
+This BMessage is entire for your own use; you can store information associated
+with the SHDirectConnectionObject in it, if you want.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>void SetTagMessage(const char * fieldName, const BMessage &amp;
+msg)</B>
+
+<P>This method allows you to specify a BMessage that will be added to every
+BMessage that this SHDirectConnection object forwards to its (target) BMessenger.&nbsp;
+This allows you to tag BMessages so that when your target code receives
+them, it knows they came from this SHDirectConnection.&nbsp; (Actually,
+the BMessages already contain an SH_NAME_CONNECTIONID field for this purpose,
+but adding a custom BMessage can be useful too)
+
+<P>If (fieldName) is non-NULL, it will be used as the field name of the
+tag BMessage.&nbsp; If it is NULL, then BMessage tagging is disabled.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>void SetTarget(const BMessenger &amp; target)</B>
+
+<P>This method allows you to change the target of this SHDirectConnection.&nbsp;
+Once this method returns, all BMessages that are received over the TCP
+connection will be forwarded to (target).&nbsp; This method is thread safe,
+so it may be called at any stage of the SHDirectConnection's life.
+<BR>&nbsp;
+</BODY>
+</HTML>

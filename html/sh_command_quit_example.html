@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>Example of SH_COMMAND_QUIT</TITLE>
+</HEAD>
+<BODY>
+<B>Basic Example of how to use SH_COMMAND_QUIT</B>
+
+<P>
+<HR WIDTH="100%">
+
+<P>Example 1:&nbsp; Tell all child nodes whose names begin with the letter
+"J" to go away.
+
+<P>&nbsp;&nbsp; BMessage msg(SH_COMMAND_QUIT);
+<BR>&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "J*");
+<BR>&nbsp;&nbsp; root->PostMessage(&amp;msg);
+
+<P>
+<HR WIDTH="100%">
+
+<P>Note:&nbsp; <A HREF="sh_command_removecomponents.html">Another way</A>
+to accomplish the same thing is to send an <A HREF="sh_commands.html#removecomponents">SH_COMMAND_REMOVECOMPONENTS</A>
+message to the parent(s) of the children you wish to delete, and specifying
+the children to remove in the SH_NAME_CHILDREN field.&nbsp; Either way
+is fine.
+<BR>&nbsp;
+</BODY>
+</HTML>

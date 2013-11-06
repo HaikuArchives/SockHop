@@ -1,0 +1,216 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>SockHop SHFileSpec Page</TITLE>
+</HEAD>
+<BODY>
+&nbsp;<B><U>The SHFileSpec class</U></B>
+
+<P>The SHFileSpec class is what SockHop uses to specify groups of files
+that are to be distributed across the network and cached on different nodes.&nbsp;
+An SHFileSpec can refer to a single file, a set of files, or even several
+sets of files (one set of files for each supported hardware architecture).&nbsp;
+In this way, SHFileSpec objects offer a succinct method of describing all
+the files necessary to perform an operation (for example, to instantiate
+an object from an add-on).&nbsp; SHFileSpec object are used by SockHop's
+file caching system to automagically manage the intelligent caching and
+distribution of your files and data over the different machines in your
+SockHop tree.
+<BR>SHFileSpecs are containers for simpler objects known as <A HREF="shflavors.html">SHFlavors</A>,
+where each SHFlavor represents one file in the set.
+
+<P>Here is an example of creating a simple SHFileSpec that indicates some
+data files to be downloaded:
+
+<P><TT><NOBR>&nbsp;&nbsp; SHFileSpec spec;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; spec.AddFlavor(<A HREF="shflavors.html">SHFlavor</A>("splash.jpg"));&nbsp;&nbsp;&nbsp;&nbsp;
+// note:&nbsp; This example doesn't check return values, but you should!</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; spec.AddFlavor(<A HREF="shflavors.html">SHFlavor</A>("rocket.jpg"));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; spec.AddFlavor(<A HREF="shflavors.html">SHFlavor</A>("sound.wav"));</NOBR></TT>
+
+<P>Sending this SHFileSpec as part of an SH_COMMAND_ADD_COMPONENTS BMessage
+would cause these files to be transferred to the current directory of every
+SockHop node that the BMessage specified.
+
+<P>Here's a somewhat fancier example:
+
+<P><TT><NOBR>&nbsp;&nbsp; SHFileSpec spec;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; spec.AddFlavor(<A HREF="shflavors.html">SHFlavor</A>("my_program_x86",
+SH_ARCH_BEOS_X86));&nbsp; // note:&nbsp; This example doesn't check return
+values, but you should!</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; spec.AddFlavor(<A HREF="shflavors.html">SHFlavor</A>("my_program_ppc",
+SH_ARCH_BEOS_PPC));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; spec.AddFlavor(<A HREF="shflavors.html">SHFlavor</A>("another_program_x86",
+SH_ARCH_BEOS_X86));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; spec.AddFlavor(<A HREF="shflavors.html">SHFlavor</A>("another_program_ppc",
+SH_ARCH_BEOS_PPC));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; spec.AddFlavor(<A HREF="shflavors.html">SHFlavor</A>("readme.txt",
+SH_ARCH_ANY));</NOBR></TT>
+
+<P>As you might guess, this SHFileSpec specifies a different set of files
+to be downloaded to different computers.&nbsp; All Intel-based machines
+that receive the download message would get copies of "my_program_x86"
+and "another_program_x86".&nbsp; The PowerPC-based machines would get "my_program_ppc"
+and "another_program_ppc".&nbsp; All the machines (PowerPC and Intel) would
+receive a copy of "readme.txt", since it is marked as usable by any architecture.
+
+<P>Note the the SH_ARCH_* constants are bitchords, which means that you
+can combine them to specify flavors that are acceptable on multiple types
+of hardware.&nbsp; Of course, there are currently only two architectures
+defined, since SockHop only runs on BeOS, which only runs on PowerPC and
+Intel platforms.&nbsp; The constant SH_ARCH_ANY (which is the flavor bitchord
+used when you don't specify an architecture) is just a chord with all the
+bits set, meaning that any type of hardware can use the file the SHFileSpec
+represents.
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>SHFileSpec()</B>
+
+<P>Default constructor, creates an "empty" SHFileSpec object.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHFileSpec(const SHFileSpec &amp; copyMe)</B>
+
+<P>Copy constructor.
+
+<P>
+<HR WIDTH="100%"><B>SHFileSpec &amp; operator =(const SHFileSpec &amp;
+copyMe)</B>
+
+<P>Assignment operator.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>bool operator ==(const SHFileSpec &amp; compareMe) const</B>
+
+<P>Comparison operator.&nbsp; Two SHFileSpecs are equal if they contains
+the same set of SHFlavors.&nbsp; (Ordering of <A HREF="shflavors.html">SHFlavors</A>
+within the SHFileSpec is ignored)
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>bool operator !=(const SHFileSpec &amp; compareMe) const</B>
+
+<P>Comparison operator.&nbsp; Returns the opposite of what '==' would have
+returned.
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>SHFileSpec operator + (const SHFileSpec &amp; addee) const</B>
+
+<P>Returns an SHFileSpec with the flavors of both (this) and (addee). Any
+duplicate flavors will have been removed.
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>SHFileSpec &amp; operator += (const SHFileSpec &amp; addee)</B>
+
+<P>Adds the flavors of (addee) to this object.&nbsp;&nbsp; Duplicate flavors
+will not be added.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHFileSpec operator - (const SHFileSpec &amp; that) const</B>
+
+<P>Returns an SHFileSpec that contains all the SHFlavors in (this) SHFileSpec,
+except for the ones that are also in (that).
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHFileSpec &amp; operator -= (const SHFileSpec &amp; that)</B>
+
+<P>Removes from (this) any SHFlavors that are present in (that).
+
+<P>
+<HR WIDTH="100%"><B>virtual status_t Flatten(void * buf, ssize_t numBytes)
+const</B>
+<BR><B>virtual status_t Unflatten(type_code code, const void * buf, ssize_t
+numBytes)</B>
+<BR><B>virtual ssize_t FlattenedSize() const</B>
+<BR><B>virtual type_code TypeCode() const</B>
+<BR><B>virtual bool IsFixedSize() const</B>
+
+<P>These methods implement the BFlattenable interface for SHFileSpec.&nbsp;
+They work pretty much the way you would expect.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>status_t AddFlavor(const <A HREF="shflavors.html">SHFlavor</A> &amp;
+flavor)</B><B></B>
+
+<P>Attempts to add (flavor) to this SHFileSpec object.&nbsp; Note that
+(flavor) is copied; the calling code retains ownership of its copy of (flavor).&nbsp;&nbsp;
+Returns B_NO_ERROR if the new <A HREF="shflavors.html">SHFlavor</A> was
+successfully added, or B_BAD_VALUE if the <A HREF="shflavors.html">SHFlavor</A>
+could not be added because it wasn't valid (i.e. its InitCheck() method
+didn't return B_NO_ERROR).&nbsp; If (flavor) is a duplicate of an <A HREF="shflavors.html">SHFlavor</A>
+that is already in this SHFileSpec, it will not be added again (but B_NO_ERROR
+will be returned anyway).
+
+<P>
+<HR WIDTH="100%">
+<BR><B>status_t RemoveFlavor(const <A HREF="shflavors.html">SHFlavor</A>
+&amp; flavor)</B>
+
+<P>Attempts to remove an <A HREF="shflavors.html">SHFlavor</A> that is
+equal to (flavor) from our set.&nbsp; Returns B_NO_ERROR if an <A HREF="shflavors.html">SHFlavor</A>
+was removed, or B_NAME_NOT_FOUND if no matching <A HREF="shflavors.html">SHFlavor</A>
+was present.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>status_t RemoveFlavorAt(int32 index)</B>
+
+<P>Attempts to remove the <A HREF="shflavors.html">SHFlavor</A> at the
+(index)'th position in our list, with the first position being position
+zero.&nbsp; Returns B_NO_ERROR if an <A HREF="shflavors.html">SHFlavor</A>
+was successfully removed, or B_BAD_INDEX if not a valid index.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>status_t GetFlavorAt(uint32 index, <A HREF="shflavors.html">SHFlavor</A>
+&amp; setFlavor) const</B>
+
+<P>Attempts to copy the <A HREF="shflavors.html">SHFlavor</A> at index
+(index) into (setFlavor).&nbsp; Returns B_NO_ERROR on success, or B_BAD_INDEX
+if (index) was invalid.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>int32 IndexOf(const <A HREF="shflavors.html">SHFlavor</A> &amp;
+flavor) const</B>
+
+<P>Returns the position index of the <A HREF="shflavors.html">SHFlavor</A>
+that is equal to (flavor) in the SHFileSpec's flavor list, or -1 if no
+flavor in the list matches (flavor).
+
+<P>
+<HR WIDTH="100%">
+<BR><B>uint32 CountFlavors() const</B>
+
+<P>Returns the number of <A HREF="shflavors.html">SHFlavors</A> currently
+in this SHFileSpec's flavor list.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>void MakeEmpty()</B>
+
+<P>Removes all flavors from this object.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>void Strip(uint32 whichArchs)</B>
+
+<P>Removes all flavors from this SHFileSpec except for the ones that match
+the given architecture bitchord.&nbsp; If no flavors match the architecture
+bitchord, the SHFileSpec becomes empty.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>void PrintToStream() const</B>
+
+<P>Dumps the state of the SHFileSpec to stdout.
+<BR>&nbsp;
+<HR WIDTH="100%">
+</BODY>
+</HTML>

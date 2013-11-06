@@ -1,0 +1,165 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>SockHop Introduction Page</TITLE>
+</HEAD>
+<BODY>
+<B><U>Introducing the SockHop system</U></B>
+
+<P>SockHop is a system that facilitates the development of BeOS applications
+that run on many machines at once.&nbsp;&nbsp; It is implemented in a single
+file (libsockhop.so) that serves as both shared library for client code,
+and as a server program for remote program invocation and control.&nbsp; SockHop's
+primary design goals are <I>ease of use</I>, <I>flexibility</I>, and <I>scalability</I>.&nbsp;
+Using SockHop, writing and debugging a BeOS program that runs on many machines
+at once is not much harder than writing a "regular" multithreaded BeOS
+program.
+
+<P><B><U>Features that SockHop currently supports</U></B>
+<UL>
+<LI>
+Creates and connects together any number of teams on any number of BeOS
+machines into a "virtual network".&nbsp; The virtual network's topology
+is that of an arbitrary tree, with user threads and messaging threads running
+on each node on the tree.&nbsp; This tree configuration allows the virtual
+network to scale to tens of thousands of machines. (in theory, at least;
+I haven't tested this ;))</LI>
+
+<LI>
+Routes, multicasts, and broadcasts BMessages up and down the tree according
+to addressing info they contain.&nbsp; The default routing algorithm uses
+a powerful <A HREF="wi1dpath.html">node-path regular expression wildcarding</A>
+scheme, or you can <A HREF="sorters.html">supply your own routing methods</A>
+via add-ons.&nbsp; You can specify a different routing algorithm for each
+node on the network, or even specify per BMessage which algorithm should
+be used.</LI>
+
+<LI>
+In addition to the standard tree-based routing, any node may create a "<A HREF="sh_commands.html#addcomponents">symlink</A>"
+to any other node in the tree, allowing it to send BMessages directly to
+that node for better performance.</LI>
+
+<LI>
+Automatically distributes and caches executable code and data files to
+every node on the virtual network that needs them.&nbsp; Once you have
+installed and executed libsockhop.so on all the involved machines, you
+only need to deal with the one "root machine" that you do your compiling
+on;&nbsp; SockHop will automatically handle all the rest.</LI>
+
+<LI>
+Convenient utility classes are provided for accepting and creating TCP
+connections that link your code with programs running outside of the node
+tree.</LI>
+
+<LI>
+Handles heterogeneous networks, making sure that each machine in the virtual
+network gets the appropriate files for its architecture.&nbsp; (e.g. Intel
+executables go to the Intel machines, PowerPC code goes to Macs and BeBoxes,
+platform-neutral data files go to machines of any hardware architecture,
+etc)</LI>
+
+<LI>
+Includes a simple password-based security policy, or you can write your
+own security policy as an add-on for more peace of mind.</LI>
+
+<LI>
+Loads user-written add-ons to instantiate and propagates <A HREF="workers.html">"live"
+objects</A> over the virtual network.&nbsp; Want your worker object running
+on every computer in the lab?&nbsp; Just Archive() it up into a BMessage
+and broadcast it!</LI>
+
+<LI>
+Uses a simple yet flexible BMessage-based API that integrates well with
+the "Be Philosophy".&nbsp; With this API, common tasks like setting up
+the virtual network, propagating code, and multicasting or broadcasting
+BMessages to various nodes are dead easy, more complicated things like
+intelligent error handling and synchronization are only a little bit harder,
+and really cool things like threads that "roam the network" or dynamic
+network reconfiguration are also straightforward.</LI>
+
+<LI>
+Guaranteed clean system shutdowns.&nbsp; When your root program terminates
+(either intentionally or because of a crash or CTRL-C), all other nodes
+on the virtual network automatically shut down and exit cleanly.</LI>
+
+<LI>
+100% Multithreaded, asynchronous design for efficiency.</LI>
+
+<LI>
+Each remote node is created in its own address space, so you won't have
+to restart any of your <A HREF="sockhopserver.html">SockHop server processes</A>
+every time the add-on you are developing crashes.</LI>
+
+<LI>
+libsockhop.so is open-sourced under the GNU Public License (GPL), so you
+have easy access to its source code if you need it.&nbsp; The other parts
+of the SockHop package (SockDemo, etc) are in the Public Domain.</LI>
+</UL>
+<B><U>Features that will be added to SockHop in a subsequent release</U></B>
+<UL>
+<LI>
+Ability to use UDP and/or Ethernet broadcast packets for more efficient
+one-to-many transmission.</LI>
+
+<LI>
+Optimize handling of BMessages (use more reference counting and less data
+copying).</LI>
+
+<LI>
+Optional GUI for the SockHop server.</LI>
+
+<LI>
+More example programs and diagnostic tools.</LI>
+</UL>
+<B><U>Potential Features (ideas that may or may not be implemented)</U></B>
+<UL>
+<LI>
+Hooks into the BeOS scripting architecture for easy remote machine control.</LI>
+
+<LI>
+A collection of handy included SHWorker and SHSorter subclass add-ons.</LI>
+
+<LI>
+A collection of wrappers/utility functions that further simplify common
+tasks.</LI>
+
+<LI>
+Some sort of "virtual network configuration manager", into which the user
+could enter relevant information about all the computers that may be used
+in the SockHop tree.&nbsp; SockHop programs could then access this database
+for configuration info, instead of having to get this information "manually"
+from the user or a config file.</LI>
+
+<LI>
+Data streaming.&nbsp;&nbsp; (for things like video broadcasting, and just
+for more memory-efficient transmission of large BMessages)</LI>
+</UL>
+<B><U>Note on Internet Usage</U></B>
+
+<P>Although SockHop will work over the Internet (it uses regular old TCP
+connections), it was not designed with general Internet usage as a priority.&nbsp;
+Before using SockHop as the base for a general-use Internet app, consider
+the following:
+<UL>
+<LI>
+One of the things a SockHopServer does is download (to potentially any
+location in the filesystem!) and execute arbitrary C++ code.&nbsp; This
+makes SockHop a potentially <B>BIG SECURITY HOLE</B>--an easy target for
+spreading viruses, trojan horses and other nastiness.&nbsp; The SockHopServer
+can (and should) be set to require a password from clients before it will
+start a session, but nonetheless running a SockHopServer that is accessible
+to the entire Internet might not be such a wise idea.&nbsp; (Note also
+that passwords are currently passed over the net as plaintext!!!)</LI>
+</UL>
+If you have suggestions on how SockHop might be made more secure or amenable
+to running over "the wild untamed Internet",&nbsp; please email me; I'd
+love to hear them.&nbsp; (Of course, the *real* solution for this problem
+has been implemented and it's called Java; but Java has its own set of
+limitations, and anyway I am NOT about to write my own JVM!&nbsp; ;))
+
+<P><A HREF="index.html">Back to Top</A>
+<BR>&nbsp;
+</BODY>
+</HTML>

@@ -1,0 +1,293 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>SockHop SH_NAME page</TITLE>
+</HEAD>
+<BODY>
+<B><U>SockHop Universal Field Names</U></B>
+
+<P>Whenever a BMessage is posted into the SockHop processing tree, it is
+scanned for certain standard field names.&nbsp; These field names are used
+to determine how the BMessage should be handled.&nbsp; Each of these field
+names starts with the letters 'sh', followed by a capital letter and then
+possibly some more letters.&nbsp; To avoid conflicts, please do not use
+similarly named fields for other purposes in BMessages you send over SockHop.&nbsp;
+These standard field names are enumerated in the file &lt;sockhop/SockHopConstants.h>.
+
+<P>Note that all the SH_NAME_* fields listed here are optional;&nbsp; no
+BMessage is required to include any of them.
+
+<P><B><U>Listing of SH_NAME string constants</U></B>
+
+<P>
+<HR WIDTH="100%">
+<UL>
+<LI>
+SH_NAME_TO</LI>
+
+
+<P>SH_NAME_TO is used to specify which nodes in the tree will receive the
+BMessage.&nbsp; (Here, "receive" is used in the sense that the BMessage
+is processed on the receiving nodes--as distinguished from the alternate
+situation, where a BMessages "passes through" a node in the tree and is
+forwarded onward, without being "received" by that node)
+
+<P>The SH_NAME_TO field in a BMessage is not read by SockHop nodes per
+se; but it <I>is</I> read by SHWi1dPathSorters.&nbsp; And since every SockHop
+node starts up with an <A HREF="wi1dpath.html">SHWi1dPathSorter</A> object
+running as the default sorter, SH_NAME_TO will be parsed out of all BMessages
+where you don't explicitely specify that another SHSorter be used to route
+the BMessage.
+
+<P><A HREF="wi1dpath.html">Click here for examples of how to use SH_NAME_TO.</A></UL>
+
+<HR WIDTH="100%">
+<UL>
+<LI>
+SH_NAME_TOWORKERS</LI>
+
+
+<P>SH_NAME_TOWORKERS can be used to specify, for each node that the BMessage
+is processed on, which <A HREF="workers.html">SHWorkers</A> should be given
+a copy of the BMessage.&nbsp; The SH_NAME_TOWORKERS field should be a string,
+or array of strings, each specifying either the <A HREF="workers.html#GetName">name</A>
+of an <A HREF="workers.html">SHWorker</A>, or a regular expression that
+specifies a set of <A HREF="workers.html">SHWorker</A> <A HREF="workers.html#GetName">names</A>.&nbsp;
+If the SH_NAME_TOWORKERS field is not included in a BMessage, then the
+BMessage will be given to all <A HREF="workers.html#IsInterestedIn">interested</A>
+<A HREF="workers.html">SHWorkers</A> on each receiving node.
+
+<P>Note that in order for an <A HREF="workers.html">SHWorker</A> to receive
+a BMessage, two things must be true:&nbsp; the <A HREF="sorters.html">SHSorter</A>
+must be <A HREF="sorters.html#DoesMessageGoToWorker">willing to give</A>
+it the BMessage, and the <A HREF="workers.html">SHWorker</A> must be interested
+in the BMessage.&nbsp; For the <A HREF="wi1dpath.html">SHWi1dPathSorter</A>
+that is the default SockHop message router, this SH_NAME_TOWORKERS field
+determines the former condition.&nbsp; The <A HREF="workers.html">SHWorker</A>
+subclass determines the other.
+
+<P>Note also that the SH_NAME_TOWORKERS field, like the SH_NAME_TO field,
+is actually meaningful only to the <A HREF="wi1dpath.html">SHWi1dPathSorter</A>,
+not to the SockHop message distribution code itself.&nbsp; Thus, if you
+specify a different <A HREF="sorters.html">SHSorter</A> to use, this field
+may not have any effect.
+<BR>&nbsp;
+<BR><A HREF="wi1dpath.html">Click here for examples of how to use SH_NAME_TOWORKERS.</A>
+<BR>&nbsp;</UL>
+
+<HR WIDTH="100%">
+<UL>
+<LI>
+SH_NAME_ONSUCCESS</LI>
+
+
+<P>This field may contain an array of one or BMessages.&nbsp; When a node
+decides that the operation represented by this BMessage has succeeded <I>for
+that node</I>, it will post all the BMessages in this field to the SockHop
+network.&nbsp; Thus, if you want to be notified if and when an operation
+has succeeded, you can add one or more BMessages to this field.&nbsp; You
+will want to add SH_NAME_TO fields to each "success message" in the array
+to indicate where that BMessage should be sent.&nbsp; Note that in many
+cases you will get multiple copies of your "success messages" back&nbsp;
+(one copy of each BMessage in the SH_NAME_ONSUCCESS array per receiving
+node per success event).
+
+<P>What it means for a BMessage to "succeed" a node depends on the type
+of the BMessage.&nbsp; Here is a table showing what processing event triggers
+a "success event" (and thus a posting of all success messages from that
+node) for each message type:</UL>
+&nbsp;
+<TABLE BORDER WIDTH="100%" >
+<CAPTION><B>Success event triggers for each BMessage type</B></CAPTION>
+
+<TR>
+<TD>SH_COMMAND_ADDCOMPONENTS</TD>
+
+<TD>Whenever a node has created and connected to a child node, instantiated
+and added an <A HREF="sorters.html">SHSorter</A> or <A HREF="workers.html">SHWorker</A>,
+or cached a file as requested by this BMessage.&nbsp; Success BMessages
+may have a string, <A HREF="shnodespecs.html">SHNodeSpec</A> or <A HREF="shfilespecs.html">SHFileSpec</A>
+added to their SH_NAME_REGARDING field to assist you in determining which
+action succeeded.</TD>
+</TR>
+
+<TR>
+<TD>SH_COMMAND_SETPARAMETERS</TD>
+
+<TD>Whenever a parameter was successfully set to a value contained in this
+BMessage.&nbsp; The name/value pair that was successfully set will be added
+to the reply BMessage to let you know which action succeeded.</TD>
+</TR>
+
+<TR>
+<TD>SH_COMMAND_GETPARAMETERS</TD>
+
+<TD>As soon as this BMessage is received.&nbsp; Success BMessages will
+have parameter name/value pairs added to them before they are posted.</TD>
+</TR>
+
+<TR>
+<TD>SH_COMMAND_QUIT</TD>
+
+<TD>Will not cause a success message to be sent.</TD>
+</TR>
+
+<TR>
+<TD>(all other message types)</TD>
+
+<TD>Immediately, whenever the BMessage arrives at a target (e.g. receiving)
+node.&nbsp; The success message will be sent regardless of whether any
+<A HREF="workers.html">SHWorkers</A> actually process the BMessage, and
+regardless of what they do with it.</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BLOCKQUOTE><A HREF="sh_name_onsuccess_example.html">Click here for examples
+of how to use SH_NAME_ONSUCCESS.</A></BLOCKQUOTE>
+
+<HR WIDTH="100%">
+<BR>SH_NAME_ONFAILURE
+<UL>The SH_NAME_ONFAILURE field is very similar to the SH_NAME_ONSUCCESS
+field, except that this field contains an array of BMessages to be posted
+when the BMessage it is a part of has "failed".&nbsp; What this means,
+for each message type, is:</UL>
+&nbsp;
+<TABLE BORDER WIDTH="100%" >
+<CAPTION><B>Failure event triggers for each BMessage type</B></CAPTION>
+
+<TR>
+<TD>SH_COMMAND_ADDCOMPONENTS</TD>
+
+<TD>Whenever a node has failed to create and connect to a child node, or
+the connection to a child node has been severed, or an <A HREF="workers.html">SHWorker</A>
+or <A HREF="sorters.html">SHSorter</A> could not be instantiated, or a
+requested file could not be cached.&nbsp; Failure BMessages may have a
+<A HREF="shnodespecs.html">SHNodeSpec</A> or <A HREF="shfilespecs.html">SHFileSpec</A>
+added to their SH_NAME_REGARDING field to assist you in determining which
+action failed.</TD>
+</TR>
+
+<TR>
+<TD>SH_COMMAND_SETPARAMETERS</TD>
+
+<TD>Whenever a parameter specified in this BMessage could not be set.&nbsp;
+Failure BMessages will have the name/value pair of the offending parameter
+added to them to assist you in determining which parameter set failed.</TD>
+</TR>
+
+<TR>
+<TD>SH_COMMAND_GETPARAMETERS</TD>
+
+<TD>Whenever a parameter specified in this BMessage did not exist.&nbsp;
+The name of the non-existent parameter will be added to the Failure BMessages
+to tell you which parameter could not be found.</TD>
+</TR>
+
+<TR>
+<TD>SH_COMMAND_QUIT</TD>
+
+<TD>Should never fail.</TD>
+</TR>
+
+<TR>
+<TD>(all other message types)</TD>
+
+<TD>Never (user messages always succeed on any node they arrive at)</TD>
+</TR>
+</TABLE>
+
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A HREF="sh_name_onfailure_example.html">Click
+here for examples of how to use SH_NAME_ONFAILURE.</A>
+
+<P>
+<HR WIDTH="100%">
+<UL>
+<LI>
+SH_NAME_WHENDONE</LI>
+
+
+<P>This field also may contain an array of BMessages, however it behaves
+quite differently than the fields documented above.&nbsp; The BMessages
+contained in this field are guaranteed to be posted exactly once, by the
+same node that this BMessage was originally posted to, and they are guaranteed
+to not be posted until the operation represented by this BMessage is "complete".
+
+<P>Now, what does "complete" mean?&nbsp; In general, it means that all
+the "success messages" and "failure messages" that were requested in the
+same BMessage as the SH_NAME_WHENDONE field have already been sent--no
+more will arrive after the "done messages" have been received.&nbsp; This
+is handy, since it lets you know when can stop waiting for "on success"
+and "on failure" messages and proceed to the next step in your setup process.
+
+<P>There is an exception to the above rule, however.&nbsp; The exception
+is this:&nbsp; if your BMessage is an SH_COMMAND_ADDCOMPONENTS BMessage
+that contains an SH_NAME_CHILDREN field (and thus will have the effect
+of connecting new nodes to the tree), then it is possible that you will
+"failure messages" for this BMessage even after you received your "done
+messages".&nbsp; The reason for this is that child nodes can be all successfully
+set up (causing the "done messages" to be sent), and then at some later
+time the TCP connection to them may be closed (by a network glitch, computer
+crash, or because the nodes themselves decided to terminate)--causing a
+"failure message" to be sent to notify you of the disappearance of the
+child node.
+
+<P><A HREF="sh_name_whendone_example.html">Click here for examples of how
+to use SH_NAME_WHENDONE.</A></UL>
+
+<HR WIDTH="100%">
+<UL>
+<LI>
+SH_NAME_WHICHSORTER</LI>
+
+
+<P>This field may contain a single string, and allows you to specify the
+name of the <A HREF="sorters.html">SHSorter</A> to be used to route this
+BMessage.&nbsp; If this field is not specified, each SockHop node will
+automatically use its <A HREF="wi1dpath.html">default SHSorter</A> to route
+the BMessage.&nbsp; Unless you have used SH_COMMAND_SETPARAMETERS to change
+the default SHSorter on a node, the default sorter used will be an <A HREF="wi1dpath.html">SHWi1dPathSorter</A>
+(whose name, in case you feel the need to specify it explicitely, is "wi1dpath").
+
+<P><A HREF="sh_name_sorter_example.html">Click here for an example of how
+to use SH_NAME_SORTER.</A></UL>
+
+<HR WIDTH="100%">
+
+<P><B><U>Fields added by SockHop to reply BMessages</U></B>
+
+<P>Sometimes SockHop nodes will add one of the following fields to a BMessage
+before posting it back into the network.&nbsp; You are not meant to put
+these fields into BMessages that you give to SockHop, rather you can read
+them out of BMessages you get from SockHop.
+
+<P>
+<HR WIDTH="100%">
+<UL>
+<LI>
+SH_NAME_FROM</LI>
+</UL>
+
+<UL>This field is added by SockHop to any BMessages that it posts as a
+response to SH_NAME_ONSUCCESS or SH_NAME_ONFAILURE fields in your BMessages.&nbsp;
+This field will contain a string that is the absolute pathname of the node
+that originated the reply message.&nbsp; That way you can know just where
+in the tree the "success event" or "failure event" event occurred.</UL>
+
+<HR WIDTH="100%">
+<UL>
+<LI>
+SH_NAME_REGARDING</LI>
+</UL>
+
+<UL>This field is often (but not always) added by SockHop to a success/failure
+reply BMessage at the same time as the SH_NAME_FROM field is.&nbsp; It
+contains either a flattened SHNodeSpec, or a flattened SHFileSpec, or a
+string as data.&nbsp; This field can tell the receiving code exactly what
+object the success message or error message is about.</UL>
+
+<HR WIDTH="100%">
+</BODY>
+</HTML>

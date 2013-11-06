@@ -1,0 +1,191 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>SockHop SHNodeSpec Page</TITLE>
+</HEAD>
+<BODY>
+<B><U>The SHNodeSpec class</U></B> (derives from
+BFlattenable)
+
+<P>To easily specify the characteristics of a node in the tree, SockHop
+defines the class SHNodeSpec.&nbsp; Note that an SHNodeSpec is <B><I>not</I></B>
+necessarily a reference to any particular existing node in the tree; rather,
+it is a set of values that specify how a node or connection can be made.&nbsp;
+Each SHNodeSpec object holds the following information:
+<UL>
+<LI>
+The name of the node.&nbsp; This name can be any string of characters,
+and is used by SockHop for message routing purposes.&nbsp; It doesn't have
+to be unique, even with respect to its sibling nodes in the tree, but it's
+generally better if it is.&nbsp; (sibling nodes with the same node name
+are impossible to address independently using the <A HREF="wi1dpath.html">SHWi1dPathSorter</A>)&nbsp;
+To avoid confusion, it also should not have the '/' character in it, nor
+should it be set to "." or "..".</LI>
+
+<LI>
+The hostname of the computer that the node is to run on.&nbsp; This is
+a standard Internet hostname string (e.g "sockhop.sugoi.com"), and usually
+refers to a computer that is running a <A HREF="sockhopserver.html">SockHop
+server</A>.&nbsp; If this field is not specified, however, the node will
+not be connected over a TCP connection--instead, it will run as a thread
+inside the team of its parent node.&nbsp; Don't worry--this distinction
+is generally transparent to SockHop code.</LI>
+
+<LI>
+The port number to connect to on the target host.&nbsp; This field is also
+only relevant if a hostname was specified.&nbsp; If this field is not specified,
+it defaults to 2958.</LI>
+
+<LI>
+A BMessage that can contain user information about the specified node.&nbsp;
+The contents of this BMessage can be used by the receiving server to decide
+whether or not to accept the connection, or by <A HREF="sorters.html">SHSorters</A>
+to route BMessages.</LI>
+</UL>
+SHNodeSpecs are subclasses of BFlattenable, so it is easy to add them to
+a BMessage:
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp; BMessage myMessage(SH_NODE_ADDCOMPONENTS);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp; myMessage.AddFlat(SH_NAME_CHILDREN,
+&amp;SHNodeSpec("child"));</NOBR></TT>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; They also have some niceties defined
+like Gets and Sets for all the fields mentioned above, copy constructors,
+and some operators defined for them.&nbsp; All of these features should
+be self-explanatory.
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHNodeSpec()&nbsp;</B>
+
+<P>Default constructor, creates object with all fields empty
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHNodeSpec(const SHNodeSpec &amp; copyMe)</B>
+
+<P>Copy constructor - creates a clone of (copyMe)
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>SHNodeSpec(const char * nodeName)</B>
+<BR><B>SHNodeSpec(const char * nodeName, const BMessage &amp; specMsg)</B>
+
+<P>Constructors that specify a child node that runs in the same process
+space as its parent.
+<BR>&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>SHNodeSpec(const char * nodeName, const char * hostName)</B>
+<BR><B>SHNodeSpec(const char * nodeName, const char * hostName, const BMessage
+&amp; specMsg)</B>
+<BR><B>SHNodeSpec(const char * nodeName, const char * hostName, int portNum)</B>
+<BR><B>SHNodeSpec(const char * nodeName, const char * hostName, int portNum,
+const BMessage &amp; specMsg)</B>
+
+<P>Constructors that specify a child node that runs remotely, via TCP,
+on a specified host.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>SHNodeSpec &amp; operator =(const SHNodeSpec &amp; copyMe)</B>
+
+<P>Assignment operator.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>bool operator ==(const SHNodeSpec &amp; compareMe) const</B>
+
+<P>Comparison operator.&nbsp; Note:&nbsp; The (specMsg) fields of the two
+objects are NOT examined as part of this comparison!
+<BR>&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>bool operator !=(const SHNodeSpec &amp; compareMe) const</B>
+
+<P>Comparison operator.&nbsp; Note:&nbsp; The (specMsg) fields of the two
+objects are NOT examined as part of this comparison!
+<BR>&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>virtual bool IsNodeNameValid() const</B>
+
+<P>Returns true only if the node name field of this object is valid.&nbsp;
+Validity means:&nbsp; the node name may not be equal to "", "." or "..",
+and it may not have a '/' character in it, nor may it be longer than SH_MAX_NODENAME_LENGTH
+bytes.
+<BR>&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>virtual status_t Flatten(void * buf, ssize_t numBytes) const</B>
+<BR><B>virtual status_t Unflatten(type_code code, const void * buf, ssize_t
+numBytes)</B>
+<BR><B>virtual ssize_t FlattenedSize() const</B>
+<BR><B>virtual type_code TypeCode() const</B>
+<BR><B>virtual bool IsFixedSize() const</B>
+
+<P>These methods implement the BFlattenable interface for SHNodeSpec.&nbsp;
+They all work as you would expect.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>void SetHostName(const char * newHostName)</B>
+
+<P>Sets the hostname field of this object.&nbsp; An internal copy of the
+string is created and retained.
+<BR>&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>const char * GetHostName() const</B>
+
+<P>Returns a pointer to the host name string held by this SHNodeSpec.&nbsp;
+String will be valid till this object is destroyed, or SetHostName() is
+called on it.&nbsp; Guaranteed to never return NULL (returns "" if unset)
+<BR>&nbsp;&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>void SetNodeName(const char * newNodeName)</B>
+
+<P>Sets the node name field of this object.&nbsp; An internal copy of the
+string is created and retained.
+<BR>&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>const char * GetNodeName() const</B>
+
+<P>Returns a pointer to the node name string held by this SHNodeSpec.&nbsp;
+String will be valid till this object is destroyed, or SetNodeName() is
+called on it.&nbsp; Guaranteed to never return NULL (returns "" if unset)
+<BR>&nbsp;&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>void SetPortNumber(uint32 newPortNum)</B>
+
+<P>Sets the port number field of this SHNodeSpec to (newPortNum).
+<BR>&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>uint32 GetPortNumber() const</B>
+
+<P>Returns the port number of this SHNodeSpec.&nbsp; By default, this field
+is set to the value SH_DEFAULT_PORT, as defined in &lt;sockhop/SockHopConstants.h>
+
+<P>
+<HR WIDTH="100%">
+<BR><B>BMessage &amp; GetSpecMessage()</B>
+
+<P>Returns a reference to the held BMessage.&nbsp; User code may read or
+write this message any way it likes.
+<BR>This BMessage may be used by the SHAccessPolicy objects running on
+the SockHop servers to decide whether or not your connection
+<BR>is worthy of continuing.&nbsp; For example, the SHDefaultAccessPolicy
+object often looks up the string field "password" in this BMessage.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>const BMessage &amp; GetConstSpecMessage() const</B>
+
+<P>Same as GetSpecMessage(), but returned as a const reference, so you
+can't write to it.
+<BR>&nbsp;&nbsp;
+<HR WIDTH="100%">
+<BR><B>void PrintToStream() const</B>
+
+<P>Dump the state of the SHNodeSpec to stdout
+
+<P>
+<HR WIDTH="100%">
+</BODY>
+</HTML>

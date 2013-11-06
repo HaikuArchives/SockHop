@@ -1,0 +1,104 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>Example of SH_NAME_WHENDONE</TITLE>
+</HEAD>
+<BODY>
+<B>Basic Examples of how to use SH_NAME_WHENDONE</B>
+<BR>&nbsp;
+<BR>
+<HR WIDTH="100%">
+
+<P>Example 1.&nbsp; How to be sure your tree is entirely set up.&nbsp;
+Since SockHop is asynchonous, the setting up of your node tree goes on
+in parallel with your code--that is, you never "block" while things are
+happening.&nbsp; But sometimes you still need to know when SockHop has
+finished; for example, you might like to know when all the connection you
+requested have been established, so that you can start sending BMessages
+to the nodes that it created.&nbsp; For simple networks, you could use
+<A HREF="sh_name_onsuccess_example.html">SH_NAME_ONSUCCESS</A> and <A HREF="sh_name_onfailure_example.html">SH_NAME_ONFAILURE</A>
+to get BMessages back for each connection, and then examine or count the
+BMessages to track the node tree's status.&nbsp; SH_NAME_WHENDONE provides
+a simpler mechanism, however.&nbsp; In this example, we will will set up
+a three-node network, and receive a BMessage when all three nodes are ready,
+or have failed to be created.
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage setup(SH_COMMAND_ADDCOMPONENTS);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; setup.AddString(SH_NAME_TO, "/");&nbsp;&nbsp;&nbsp;
+// Tell the root node to add three children.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; setup.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("node_1",
+"beos1.sockhop.com"));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; setup.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("node_2",
+"beos2.sockhop.com"));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; setup.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("node_3",
+"beos3.sockhop.com"));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // Now the interesting part...</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage whenDone('Done');</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; whenDone.AddString(SH_NAME_TO, "/..");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; setup.AddMessage(SH_NAME_WHENDONE, &amp;whenDone);</NOBR></TT><TT><NOBR></NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;setup);</NOBR></TT><TT><NOBR></NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Now, when your target BLooper receives
+a 'Done' BMessage, it knows that all setup</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // activity in the node tree has completed.&nbsp;
+It is guaranteed that you will always</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // receive exactly one copy of your WHENDONE
+BMessage, even under dire circumstances.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // (for example, even if all of the other
+computers in your node tree were to explode!)</NOBR></TT><TT><NOBR></NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Note that the SH_NAME_WHENDONE field
+is more useful when used in conjunction with</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // the SH_NAME_ONFAILURE field.&nbsp;
+You can use SH_NAME_ONFAILURE to invoke error handling</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // code, and SH_NAME_WHENDONE to let your
+main process know when it's okay to proceed</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // past the setup stage.</NOBR></TT><TT></TT>
+
+<P>
+<HR WIDTH="100%">
+
+<P>Example 2.&nbsp; Use SH_NODE_WHENDONE to create some TestWorkers, and
+then send them a BMessage.&nbsp; A problem with SHWorkers occurs when you
+send BMessages to them immediately after sending out the <A HREF="sh_command_addcomponents.html">SH_COMMAND_ADDCOMPONENTS</A>
+BMessage that creats them.&nbsp; The problem is that sometimes the add-on
+executables for the SHWorkers don't exist on the target nodes yet, and
+the target nodes have to request them from their ancestors in the node
+tree.&nbsp; Since the nodes continue to process other BMessages while waiting
+for the add-on files to be sent to them, your BMessages might be processed
+on the node before their target SHWorkers exist yet, in which case the
+BMessages would be dropped.&nbsp; One way to avoid this problem is to use
+SH_NAME_WHENDONE to delay sending of the BMessages till all SHWorkers have
+been created:
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // A BMessage that will set up one TestWorker
+on every node that receives it...</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage setup(SH_COMMAND_ADDCOMPONENTS);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; setup.AddString(SH_NAME_TO, "/*");&nbsp;&nbsp;&nbsp;
+// goes to ALL nodes directly under the root node!</NOBR></TT><TT><NOBR></NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; TestWorker worker;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage archive;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; worker.Archive(&amp;archive);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; setup.AddMessage(SH_NAME_WORKERS, &amp;archive);</NOBR></TT><TT><NOBR></NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // This BMessage will be posted EXACTLY
+once.&nbsp; It will be posted from the same place</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // where (setup) entered the SockHop node
+tree (the root node, in this case).&nbsp; It won't</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // be posted until ALL TestWorkers have
+been instantiated (or failed to instantiate, either way)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage whenDone('DoIt');</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; whenDone.AddString(SH_NAME_TO, "/*");&nbsp;&nbsp;&nbsp;
+// It will go to the same places the setup message went to</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; setup.AddMessage(SH_NAME_ONSUCCESS, &amp;whenDone);</NOBR></TT><TT><NOBR></NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;setup);</NOBR></TT>
+<BR><TT></TT>&nbsp;
+<BR><TT></TT>&nbsp;
+</BODY>
+</HTML>

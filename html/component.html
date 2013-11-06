@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>SHComponent API</TITLE>
+</HEAD>
+<BODY>
+<B><U>The SHComponent inheritance API</U></B> (derives from
+<A HREF="distributableobject.html">SHDistributableObject</A> -> BArchivable)
+
+<P>The SHComponent class represents an object that can be transported to
+any node in the SockHop tree, and added on to it as a component.&nbsp;
+It includes an API that allows limited access to the node that the SHComponent
+is running as a part of.&nbsp; <A HREF="accesspolicy.html">SHAccessPolicy</A>'s,
+<A HREF="workers.html">SHWorkers</A>, and <A HREF="sorters.html">SHSorters</A>
+all inherit from SHComponent, so these types of object may make use of
+the methods in this API.&nbsp; Those methods are:
+
+<P>
+<HR WIDTH="100%">
+<BR><B>const char * GetNodeName() const</B>
+
+<P>This method returns the name of the node this component is running on.&nbsp;
+(So, if the nodepath of the node is "/this/is/the/path", then this method
+would return the string "path")&nbsp; The returned string belongs to the
+host node, and should not be deleted, freed, or written to.&nbsp; This
+method returns NULL if this SHComponent isn't currently running on a node.
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+<BR><B>const char * GetNodePath() const</B>
+
+<P>This method returns the full, absolute nodepath of the node this component
+is running on.&nbsp; The returned string belongs to the host node, and
+should not be deleted, freed, or written to.&nbsp; This method returns
+NULL if this SHComponent isn't currently running on a node.&nbsp; (Click
+<A HREF="wi1dpath.html#Examples">here</A> for info on what the absolute
+node path looks like).
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+<BR><B>BMessenger GetNodeMessenger() const</B>
+
+<P>Returns a BMessenger that can be used to post BMessages into the SockHop
+tree network.&nbsp; BMessages sent to this BMessenger undergo the same
+sort of forwarding and processing as BMessages sent to the root node BLooper
+(you know, the one returned by <A HREF="functions.html">SHCreateRootNode</A>()),
+except that they start their journey through the tree on the local node,
+rather than the root node.
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+
+<P>In addition to the above methods, the SHComponent class defines one
+abstract method that must be implemented by everything that inherits from
+SHComponent:
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual const char * GetName() const=0</B>
+
+<P>This method should be overridden to return a string that identifies
+this SHComponent.&nbsp; See the documentation for <A HREF="sorters.html">SHSorter</A>
+and <A HREF="workers.html">SHWorker</A> for details on how this string
+should be chosen.
+<BR>&nbsp;
+</BODY>
+</HTML>

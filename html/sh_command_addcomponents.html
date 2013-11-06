@@ -1,0 +1,223 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>Examples of SH_COMMAND_ADDCOMPONENTS usage</TITLE>
+</HEAD>
+<BODY>
+<B><FONT SIZE=+1>Basic Examples
+of how to use SH_COMMAND_ADDCOMPONENTS</FONT></B>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 1:&nbsp;&nbsp;&nbsp; Add a child named "Joe" to the root node.&nbsp;
+Joe will run on "somecomputer.beos.com", which should have a SockHopServer
+that accepts connections on port 2958, and accepts the password "".
+
+<P><TT>&nbsp;&nbsp;&nbsp; // Setup a root node to use in all succeeding
+examples.&nbsp; Pass in an invalid BMessenger, since for&nbsp;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; // this example we don't care about getting
+any reply BMessages back from the root node...</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; BLooper * root = SHCreateRootNode(BMessenger());</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; root->Run();</TT>
+
+<P>[...]
+
+<P><TT>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("Joe",
+"somecomputer.beos.com", 2958));</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</TT>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 2:&nbsp;&nbsp;&nbsp; Same as the above example, except this
+time supply the password "topsecret" to the SockHop server.&nbsp; If the
+SockHop server you wish to connect to has been configured to accept a password,
+you will need to do this in order to successfully connect to it.
+
+<P><TT>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage password;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; password.AddString("password", "topsecret");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("Joe",
+"somecomputer.beos.com", 2958, &amp;password));</NOBR></TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</TT>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 3:&nbsp;&nbsp;&nbsp; Add a TestWorker object to node "/Joe":
+
+<P><TT>&nbsp;&nbsp;&nbsp; TestWorker test;&nbsp;&nbsp;&nbsp; // TestWorker
+is a hypothetical user-defined subclass of SHWorker</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; BMessage testArchive;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; test.Archive(&amp;testArchive);</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/Joe");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_COMPONENTS, &amp;testArchive);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</TT>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 4:&nbsp;&nbsp;&nbsp; Add a CustomSorter object to node "/Joe":
+
+<P><TT>&nbsp;&nbsp;&nbsp; CustomSorter sort;&nbsp;&nbsp;&nbsp; // CustomSorter
+is a hypothetical user-defined subclass of SHSorter</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; BMessage sortArchive;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; sort.Archive(&amp;sortAchive);</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/Joe");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_COMPONENTS, &amp;sortArchive);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</TT>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 5:&nbsp;&nbsp;&nbsp; Make sure the file "mydata.bin" is cached
+locally to node "/Joe".&nbsp; If the file is not already on "/Joe"'s local
+filesystem, it will be downloaded to him.
+
+<P><TT>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/Joe");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; SHFileSpec spec;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; if (spec.addFlavor(SHFlavor("mydata.bin")) ==
+B_NO_ERROR)</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_FILES,
+&amp;spec);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; }</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; else printf("Error adding flavor--file missing?\n");</TT>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 6:&nbsp;&nbsp;&nbsp; Add a symbolic link from "/Joe" to "/Bob".&nbsp;&nbsp;
+The symlink will appear as a child of "Joe", that is named "Bob", but all
+BMessages sent to it will actually go to "/Bob".
+
+<P><TT>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/Joe");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_SYMLINKS, "/Bob");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</TT>
+
+<P>
+<HR WIDTH="100%">
+
+<P><B><FONT SIZE=+1>Fancy Examples of how to use SH_COMMAND_ADDCOMPONENTS</FONT></B>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 7:&nbsp;&nbsp;&nbsp; Add many items of various types to "/Joe"
+with a single BMessage.&nbsp; This example gives Joe three new child nodes,
+three TestWorker objects, and cached three more local files onto Joe's
+disk.
+
+<P><TT>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/Joe");</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; // Give Joe three children, on three other computers...</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("JoesChild1",
+"anothercomputer1.beos.com"));</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("JoesChild2",
+"anothercomputer2.beos.com"));</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("JoesChild3",
+"anothercomputer3.beos.com"));</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; // And give him a few more TestWorkers...</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; TestWorker testWorker;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; BMessage testMsg;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; testWorker.Archive(&amp;testMsg);</TT>
+<BR><TT>&nbsp;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_COMPONENTS, &amp;testMsg);&nbsp;&nbsp;&nbsp;
+// Joe gets</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_COMPONENTS, &amp;testMsg);&nbsp;&nbsp;&nbsp;
+// three instances of</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_COMPONENTS, &amp;testMsg);&nbsp;&nbsp;&nbsp;
+// the TestWorker!</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; // And give Joe some additional files, as well.</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; SHFileSpec spec;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; spec.AddFlavor(SHFlavor("moredata1.bin"));</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; spec.AddFlavor(SHFlavor("moredata2.bin"));</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; spec.AddFlavor(SHFlavor("moredata3.bin"));</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_FILES, &amp;spec);</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; // Send it all off</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</TT>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 8:&nbsp; Automagically download different files to different
+nodes, based on their hardware architecture.&nbsp; This example will cache
+the file "ImportantFile.powerpc" on all PowerPC BeOS systems in the node
+tree, and cache the file "ImportantFile.intel" on all Intel BeOS systems
+in the tree.
+
+<P><TT>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; // Note that I DON'T specify SH_NAME_TO for
+this one.&nbsp; Not specifying SH_NAME_TO creates</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; // a "broadcast" message that will be received
+by EVERY node in the tree!</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; // Specify files based on system type, via SHFileSpec::AddFlavor().</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; SHFileSpec spec;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; if (spec.AddFlavor(SHFlavor("ImportantFile.powerpc",
+SH_ARCH_BEOS_PPC)) != B_NO_ERROR)</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf("Warning:&nbsp;
+ImportantFile.powerpc doesn't exist on the root node!&nbsp; It won't be
+cached...\n");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; if (spec.AddFlavor(SHFlavor("ImportantFile.intel",
+SH_ARCH_BEOS_X86)) != B_NO_ERROR)</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf("Warning:&nbsp;
+ImportantFile.intel doesn't exist on the root node!&nbsp; It won't be cached...\n");</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_FILES, &amp;spec);</TT>
+
+<P><TT>&nbsp;&nbsp;&nbsp; // Send it off</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</TT>
+
+<P>
+<HR WIDTH="100%">
+<BR>Example 9:&nbsp;&nbsp;&nbsp; Make a "fully connected" network of 5
+nodes, so that any node can send a BMessage to any other node in just one
+"hop".&nbsp;&nbsp; (Note:&nbsp; This example can crash the net_server;
+apparently there are apparently race conditions in the net_server that
+cause problems when many connections are accepted near-simultaneously)
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // First, we create a node tree with nodes
+"A", "B", "C", "D", "E" under the root node:</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("A"));&nbsp;&nbsp;
+// For this example,</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("B"));&nbsp;&nbsp;
+// all the nodes are being created as threads</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("C"));&nbsp;&nbsp;
+// in the root node's process space.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("D"));&nbsp;&nbsp;
+// In real code, they might be on different computers.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("E"));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Now, tell each of the 5 nodes to create
+symlinks to all the other nodes:</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage createSymLinks(SH_COMMAND_ADDCOMPONENTS);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; createSymLinks.AddString(SH_NAME_TO, "/*");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// BMessage will go to all 5 child nodes</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; createSymLinks.AddFlat(SH_NAME_SYMLINKS,&nbsp;
+"/*");&nbsp;&nbsp; // and each of them will create symlinks to all 5.</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;createSymLinks);</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // After this point, each of the 5 children
+has 5 "children" of its own, except that these</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // "grandchildren" are actually symlinks
+to the other children.&nbsp; So, when a component on one</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // of the 5 nodes sends a message to one
+of its node's "children", the message will actually</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // go to one of the node's siblings (or
+back to the node itself)!</NOBR></TT>
+</BODY>
+</HTML>

@@ -1,0 +1,220 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>SockHop SHSorter API</TITLE>
+</HEAD>
+<BODY>
+<B><U>The SHSorter Inheritance API</U></B> (derives
+from <A HREF="component.html">SHComponent</A> -> <A HREF="distributableobject.html">SHDistributableObject</A>
+-> BArchivable)
+
+<P>The SHSorter class defines an interface that tells a node on SockHop's
+virtual tree where any given BMessage should be forwarded to.&nbsp; While
+most SockHop programs won't need to implement subclasses of SHSorter (because
+every node comes with a handy <A HREF="sorters.html">default SHSorter object</A>
+already installed), more adventurous types who wish to write their own
+BMessage routing algorithms can subclass SHSorter to do so.
+
+<P>Here are the methods that your SHSorter subclass is required to implement:
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHSorter(BMessage * archive)</B>
+
+<P>You must create a constructor for your class that can create an object
+from the data contained in the passed-in BMessage.&nbsp; This constructor
+essentially does the opposite of your Archive() method;&nbsp; instead of
+converting an object to a BMessage, it converts a BMessage back to an object.&nbsp;
+Make sure your constructor calls SHSorter(archive) in its initialization
+list!
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+<BR><B>static BArchivable * Instantiate(BMessage * archive)</B>
+
+<P>This static method is also used to turn BMessages back into real objects,
+and should be implemented like this:
+
+<P><TT><NOBR>BArchivable *</NOBR></TT>
+<BR><TT><NOBR>MySHSorterSubclass::</NOBR></TT>
+<BR><TT><NOBR>Instantiate(BMessage * archive)</NOBR></TT>
+<BR><TT><NOBR>{</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; // replace the second argument to validate_instantiation
+with your class's name!</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; if (!validate_instantiation(archive, "MySHSorterSubclass"))
+return NULL;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; return new MySHSorterSubclass(archive);</NOBR></TT>
+<BR><TT><NOBR>}</NOBR></TT>
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual status_t GetAddOnSpec(<A HREF="shfilespecs.html">SHFileSpec</A>
+&amp; spec) const</B>
+
+<P>This method (from the <A HREF="distributableobject.html">SHDistributableObject</A>
+API) should be overridden to return an <A HREF="shfilespecs.html">SHFileSpec</A>
+that indicates where the add-on executable file for this class can be found:
+
+<P><TT><NOBR>status_t</NOBR></TT>
+<BR><TT><NOBR>MySHSorterSubclass::GetAddOnSpec(<A HREF="shfilespecs.html">SHFileSpec</A>
+&amp; spec) const</NOBR></TT>
+<BR><TT><NOBR>{</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; // Allow my parent class to say what files he
+needs</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; status_t ret = SHSorter::GetAddOnSpec(spec);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; if (ret != B_NO_ERROR) return ret;</NOBR></TT><TT><NOBR></NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp; // Specify where the add-on file for Intel architecture
+is</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; SHFlavor x86("add-ons/x86/SHMySorterSubclassAddOn",
+SH_ARCH_BEOS_X86);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; ret = spec.AddFlavor(x86);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; if (ret != B_NO_ERROR) return ret;</NOBR></TT><TT><NOBR></NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp; // Specify where the add-on file for PowerPC
+computers is</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; SHFlavor ppc("add-ons/ppc/SHMySorterSubclassAddOn",
+SH_ARCH_BEOS_PPC);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; ret = spec.AddFlavor(ppc);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; if (ret != B_NO_ERROR) return ret;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; return B_NO_ERROR;</NOBR></TT>
+<BR><TT><NOBR>}</NOBR></TT>
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual const char * GetName()</B>
+
+<P>This method (from the <A HREF="distributableobject.html">SHDistributableObject</A>
+API) should be overridden to supply an identifying text string for your
+SHSorter object.&nbsp; There are no conditions imposed on what this name
+is, in particular it is not required (by SockHop) to be unique in any way.&nbsp;
+However, when SockHop gets a message with the <A HREF="sh_names.html">SH_NAME_SORTER</A>
+field present, it will iterate through its list of loaded SHSorters and
+use the first one it finds with the name specified.&nbsp; This means that
+if there are two SHSorters loaded on the same node with the same name,
+one of them will never be used!
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual status_t Archive(BMessage * archive, bool deep=true) const</B>
+
+<P>This method must be overridden to store all relevant state for your
+SHSorter into (archive).&nbsp; This method helps fulfill the SHSorter's
+BArchivable interface, and is how your SHSorter object gets transported
+over the TCP streams.&nbsp; At a bare minimum, your Archive() method should
+look like this:
+
+<P><TT><NOBR>status_t</NOBR></TT>
+<BR><TT><NOBR>SHMySorterSubclass::</NOBR></TT>
+<BR><TT><NOBR>Archive(BMessage * archive, bool deep) const</NOBR></TT>
+<BR><TT><NOBR>{</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; // Let our base class do its archiving first</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; status_t ret = SHSorter::Archive(archive, deep);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; if (ret != B_NO_ERROR) return ret;</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp; // store any additional data describing the current
+state</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; // of this SHMySorterSubclass object into the
+BMessage here</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp; // ...</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp; return B_NO_ERROR;</NOBR></TT>
+<BR><TT><NOBR>}</NOBR></TT>
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual bool DoesMessageGoTo(BMessage &amp; msg, const SHNodeSpec
+&amp; child, uint32 flags)</B>
+
+<P>Whenever a node wants to know where a BMessage should be forwarded to,
+it asks the appropriate SHSorter object by calling this method.&nbsp; In
+fact, for each received BMessage, the node calls this method once for every
+child node it has, plus once for its parent node.&nbsp; Your SHSorters'
+pattern of true/false replies to this method will determine how BMessages
+propagate throughout the tree.
+
+<P>You must override this method to decide:&nbsp; Should the BMessage (msg)
+be sent to the node represented by (child)?&nbsp; If so, you should return
+true; otherwise, return false.
+
+<P>The (flags) argument is a bit-chord that is composed of some combination
+of the following constants:
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE BORDER WIDTH="100%" >
+<CAPTION><B>Constants that may be in the (flags) parameter and what they
+mean</B></CAPTION>
+
+<TR>
+<TD>SH_FLAG_IS_PARENT</TD>
+
+<TD>This target is the parent of the current node.</TD>
+</TR>
+
+<TR>
+<TD>SH_FLAG_IS_LOCAL</TD>
+
+<TD>This target is running in the same address space as the current node.</TD>
+</TR>
+
+<TR>
+<TD>SH_FLAG_IS_SYMLINK</TD>
+
+<TD>This target is not a real child, but just a symbolic link to some other
+node.</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>
+<HR WIDTH="100%">
+<BR><B>virtual bool DoesMessageDistributeLocally(BMessage &amp; msg)</B>
+
+<P>Every time a BMessage is received by a node, this method is called once.&nbsp;
+Its job is to decide if the BMessage should be given to the SHWorkers who
+live on this node.&nbsp; If so, this method should return true; if not,
+it should return false.
+<BR>&nbsp;
+<BR>
+<HR WIDTH="100%">
+
+<P>And there are two methods which you may override if you wish, but don't
+have to:
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual void BeforeMessageRelay(BMessage &amp; msg)</B>
+
+<P>This method is called once for every BMessage that is received.&nbsp;
+It is called after all the calls to DoesMessageGoTo() and DoesMessageDistributeLocally()
+have been made, but before the BMessage has actually been forwarded to
+any other nodes or been given to any SHWorkers.&nbsp; By default, this
+method does nothing, but you can override it to do various things, such
+as modify the BMessage before it gets forwarded out.
+<BR>&nbsp;
+<BR>
+<HR WIDTH="100%">
+<BR><A NAME="DoesMessageGoToWorker"></A><B>virtual bool DoesMessageGoTo(BMessage
+&amp; msg, const char * workerName)</B>
+
+<P>Once the sorter has determined that a BMessage should be given to the
+local node (i.e., once DoesMessageDistributeLocally() has returned true),
+this method will be called to determine which <A HREF="workers.html">SHWorkers</A>
+the BMessage should be given to.&nbsp; This method is implemented by default
+to always return true--so, unless you override this method, any user BMessage
+given to this node will go to all <A HREF="workers.html">SHWorkers</A>
+living on this node.&nbsp; If you do override this method, have it return
+(true) if the worker with name (workerName) is to be given a copy of (msg),
+false if not.&nbsp; Note that the <A HREF="workers.html">SHWorker</A> must
+be <A HREF="workers.html#IsInterestedIn">interested in</A> (msg), or it
+will not be sent a copy even this method returns true!
+<BR>&nbsp;
+</BODY>
+</HTML>

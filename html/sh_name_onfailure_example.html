@@ -1,0 +1,237 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>Example of SH_NAME_ONFAILURE</TITLE>
+</HEAD>
+<BODY>
+<B>Basic Examples of how to use SH_NAME_ONFAILURE</B>
+
+<P>
+<HR WIDTH="100%">
+
+<P>Example 1:&nbsp; Detecting when your network connections have been severed,
+or failed to connect.&nbsp; Under SockHop, all connections are asynchronous.&nbsp;
+Because of that, detecting a connection that failed to connect (perhaps
+because the target computer was not turned on?), or a connection that connected,
+but was later severed (perhaps because the target computer crashed?) are
+done the same way.&nbsp; If you wish to be notified when a connection fails
+(or fails to be set up), you must let SockHop know that when you set up
+the connection, by giving it an SH_NAME_ONFAILURE BMessage to post when
+the connection fails.
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // For this example, will add one child
+named "Joe" to the root node.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddFlat(SH_NAME_CHILDREN, &amp;SHNodeSpec("Joe",
+"beos.sockhop.com"));</NOBR></TT>
+<BR><TT><NOBR>&nbsp;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // Since we want to know when the connection
+fails, we will specify a BMessage to be</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // sent back to us.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage onFailureMsg('dead');&nbsp;&nbsp;&nbsp;&nbsp;
+// choose any 'what' value here that you will recognize later</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Address the success message to ourself.&nbsp;
+Remember that it will be posted</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // from the parent of the deceased node.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; onFailureMsg.AddString(SH_NAME_TO, "/..");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // Finally, add the on-success BMessage
+to the original BMessage before sending it.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_ONFAILURE, &amp;onFailureMsg);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</NOBR></TT>
+
+<P><TT><NOBR>[... meanwhile, in your target BLooper's MessageReceived()
+method...]</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; void MyLooper :: MessageReceived(BMessage
+* msg)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; {</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (msg->what
+== 'dead')</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Got a death message back!&nbsp; Our connection must have broken!\n");</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// We can find out exactly who it was who died this way:</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SHNodeSpec whoWasIt;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (msg->FindFlat(SH_NAME_REGARDING, &amp;whoWasIt) == B_NO_ERROR)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("The child who died or could not be connected to is:\n");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+whoWasIt.PrintToStream();</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; }</NOBR></TT>
+
+<P>
+<HR WIDTH="100%">
+
+<P>Example 2:&nbsp; Detecting when your add-on worker could not be instantiated
+or started on a remote node.&nbsp; If you want a very robust program, it's
+good to know when things don't work out, right?&nbsp; Here is how to be
+notified if something goes wrong in the add-on download/object instantiation
+process for an <A HREF="workers.html">SHWorker</A> subclass, TestWorker.&nbsp;
+Things work the exact same way for <A HREF="sorters.html">SHSorter</A>
+downloads, regular file caching, symlink creation, etc.
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Okay, let's start a TestWorker object
+running on the node "/Joe"</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // ("/Joe" is assumed to already be set
+up and running in your node tree)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/Joe");</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Create a worker, capture his soul into
+a BMessage, and add him to our request BMessage.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; TestWorker worker;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage archive;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; worker.Archive(&amp;archive);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_WORKERS, &amp;archive);</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Now create a self-addressed, stamped
+BMessage that will be posted by "/Joe"</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // if the add-worker operation fails.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage onFailure('Fail');</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; onFailure.AddString(SH_NAME_TO, "/..");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_ONFAILURE, &amp;onFailure);</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</NOBR></TT>
+<BR>&nbsp;
+
+<P>
+<HR WIDTH="100%">
+
+<P><B>Fancy Examples of SH_NAME_ONFAILURE</B>
+
+<P>
+<HR WIDTH="100%">
+
+<P>Example 3:&nbsp; Here is the same thing as above, but instead of just
+one TestWorker, this example will instantiate 10 TestWorkers and a custom
+SHSorter, as well as cache some other files onto "/Joe".&nbsp; We will
+be notified individually for each operation if that particular operation
+fails.
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Okay, let's start a TestWorker object
+running on the node "/Joe"</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // ("/Joe" is assumed to already be set
+up and running in your node tree)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage msg(SH_COMMAND_ADDCOMPONENTS);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddString(SH_NAME_TO, "/Joe");</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Put 10 SHTestWorkers into the BMessage.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; for (int i=0; i&lt;10; i++)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; {</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TestWorker worker;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BMessage archive;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.Archive(&amp;archive);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_WORKERS,
+&amp;archive);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; }</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // Also we'll add a new SHBitChordSorter
+onto Joe.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; SHBitChordSorter customSorter(0x01);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage archive;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; customSorter.Archive(&amp;archive);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_SORTERS, &amp;archive);</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // And last but not least, some other files.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // These files must be located in the
+current directory of your main program.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; SHFileSpec otherFiles;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; if ((otherFiles.AddFlavor("file1.txt",
+SH_ARCH_ANY) == B_NO_ERROR)) &amp;&amp;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (otherFiles.AddFlavor("rose.jpg",
+SH_ARCH_ANY) == B_NO_ERROR)) &amp;&amp;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (otherFiles.AddFlavor("yell.wav",
+SH_ARCH_ANY) == B_NO_ERROR)))</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; {</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_FILES,
+&amp;otherFiles);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; }</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; else printf("Error, couldn't add the other
+files, at least one of them is missing!\n");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // Now create a self-addressed, stamped
+BMessage that will be posted by "/Joe"</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; // each time something fails.</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; BMessage onFailure('Fail');</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; onFailure.AddString(SH_NAME_TO, "/..");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; msg.AddMessage(SH_NAME_ONFAILURE, &amp;onFailure);</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; // And send the whole thing off to SockHop
+land</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; root->PostMessage(&amp;msg);</NOBR></TT>
+
+<P><TT><NOBR>[... meanwhile, in your target BLooper's MessageReceived()
+method...]</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp; void MyLooper :: MessageReceived(BMessage
+* msg)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; {</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (msg->what
+== 'Fail')</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Got a failure message back!&nbsp; Something has gone wrong!\n");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("The problem was with this object:\n");</NOBR></TT>
+
+<P><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// We can find out exactly what failed this way:</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Note that depending on what failed, the SH_NAME_REGARDING field</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// may contain an SHFileSpec (for file caching failures), an SHNodeSpec</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// (for child creation failures), or a string (for other failures).</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SHNodeSpec whoWasItNode;&nbsp;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SHFileSpec whoWasItFile;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+const char * whoWasItString;</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (msg->FindFlat(SH_NAME_REGARDING, &amp;whoWasItFile) == B_NO_ERROR)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+whoWasItFile.PrintToStream();</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+else if (msg->FindFlat(SH_NAME_REGARDING, &amp;whoWasItNode) == B_NO_ERROR)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+whoWasItNode.PrintToStream();</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+else if (msg->FindString(SH_NAME_REGARDING, &amp;whoWasItString) == B_NO_ERROR)</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Failure point was [%s]\n", whoWasItString);</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+else printf("Hmm, I don't know WHAT it was that failed!&nbsp; (This shouldn't
+happen)\n");</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</NOBR></TT>
+<BR><TT><NOBR>&nbsp;&nbsp;&nbsp; }</NOBR></TT>
+<BR><NOBR>&nbsp;</NOBR>
+<BR>&nbsp;
+</BODY>
+</HTML>

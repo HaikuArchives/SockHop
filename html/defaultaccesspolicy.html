@@ -1,0 +1,111 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Jeremy Friesner">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>SHDefaultAccessPolicy class description</TITLE>
+</HEAD>
+<BODY>
+<B><U>The SHDefaultAccessPolicy
+API</U></B> (derives from <A HREF="accesspolicy.html">SHAccessPolicy</A>
+-> <A HREF="component.html">SHComponent</A> -> <A HREF="distributableobject.html">SHDistributableObject</A>
+-> BArchivable)
+
+<P>The SHDefaultAccessPolicy is a simple implementation of the SHAccessPolicy
+interface.&nbsp; It can be used for common policy cases where you don't
+care too much about security issues or complex access control algorithms.&nbsp;
+By default, this class allows every type of access.&nbsp; You can, however,
+specify a password for this class to require, in which case only clients
+who connect with the given password are allowed to continue.
+
+<P>
+<HR WIDTH="99%">
+<BR><B>SHDefaultAccessPolicy(int port = SH_DEFAULT_PORT, int debugLevel
+= 0, const char * password = NULL, int32 threadPriority = B_REGULAR_PRIORITY,
+int32 encoding = SH_ENCODING_NONE)</B>
+
+<P>This constructor lets you specify the port number, default debug level,
+and password.&nbsp; All fields have defaults:&nbsp; (port), if not specified,
+will default to the port SH_DEFAULT_PORT, as specified in &lt;sockhop/SockHopConstants.h>.&nbsp;
+(debugLevel) defaults to off (0), and (password) defaults to no password
+required.&nbsp; If (port) is set to zero, the system will choose an available
+port to listen on.
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>virtual <A HREF="shnodespecs.html">SHNodeSpec</A> GetListeningLocation()</B>
+
+<P>Returns an <A HREF="shnodespecs.html">SHNodeSpec</A> with the port number
+set to the port number specified in the constructor.&nbsp; If (password)
+was specified in the constructor, the field "password", with the expected
+password string, will be added to the SpecMessage of the returned <A HREF="shnodespecs.html">SHNodeSpec</A>.
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>virtual bool OkayToAcceptConnection(<A HREF="shnodespecs.html">SHNodeSpec</A>
+&amp; connectingSpec)</B>
+
+<P>If no password was specified for this object, then this method always
+returns true.&nbsp; If a password was specified, then this method will
+only return true if the client's (connectingSpec) has a field named "password"
+in its SpecMessage, and that field's contents is a string that matches
+our password exactly.
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>virtual bool OkayToWriteFile(const char * fileName)</B>
+
+<P>Always returns true.
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>virtual bool OkayToReadFile(const char * fileName)</B>
+
+<P>Always returns true.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual bool OkayToInstantiateObject(const BMessage &amp; archive)</B>
+
+<P>Always returns true.
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual int GetDefaultDebugLevel()</B>
+
+<P>Returns the debug level specified in the constructor.
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>virtual const char * GetName() const</B>
+
+<P>Returns the string literal "default".
+
+<P>
+<HR WIDTH="100%">
+<BR><B>virtual status_t GetAddOnSpec(<A HREF="shfilespecs.html">SHFileSpec</A>
+&amp; addTo) const</B>
+
+<P>Passes the call on back to SHAccessPolicy::GetAddOnSpec().
+
+<P>
+<HR WIDTH="100%">
+<BR><B>SHDefaultAccessPolicy(BMessage * archive)</B>
+
+<P>Looks for <I>string</I> fields named "port", "password", "debug", "priority",
+and "encoding" in (archive).&nbsp; If it doesn't find them, defaults will
+be used.&nbsp; "port", "debug", and "priority" should be string representations
+of integers, while "password" may be any string.&nbsp; "encoding" may be
+one of the following:&nbsp; "none", "batch", "zliblight", "zlibmedium",
+or "zlibheavy".
+<BR>&nbsp;
+<HR WIDTH="100%">
+<BR><B>static BArchivable * Instantiate(BMessage * archive)</B>
+
+<P>Needed to be an instantiatable BArchivable object.&nbsp; Returns a new
+SHDefaultAccessPolicy, using the above (BMessage *) constructor.
+
+<P>
+<HR WIDTH="100%"><B>virtual status_t Archive(BMessage * archive, bool deep=true)
+const</B>
+
+<P>Dehydration method.&nbsp; Must be called at the beginning of subclass's
+Archive() methods.
+<BR>&nbsp;
+</BODY>
+</HTML>
