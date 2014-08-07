@@ -1,7 +1,8 @@
-
-SockHop v1.13Beta source code
-Released March 20, 1999
-Copyright 1999, Jeremy Friesner (jfriesne@ucsd.edu)
+SockHop
+================
+v1.13 Beta source code
+Released March 20, 1999  
+Copyright 1999, Jeremy Friesner (jfriesne@ucsd.edu)  
 
 This archive contains the source code for libsockhop.so version 1.13Beta.
 libsockhop.so's source code is all covered by the Gnu Library Public License
