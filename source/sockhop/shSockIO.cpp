@@ -21,12 +21,13 @@ Boston, MA  02111-1307, USA.
 
 
 #include <string.h>
-#include <socket.h>
+#include "socket.h"
 #include <stdio.h>
 #include <kernel/OS.h>
 #include <errno.h>
-#include <net/netdb.h>
+#include <posix/netdb.h>
 #include "shSockIO.h"
+#include <sys/select.h>
 
 shSockIO::
 shSockIO(int sockfd)

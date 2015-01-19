@@ -27,6 +27,8 @@ Boston, MA  02111-1307, USA.
 #include <sockhop/SHDirectConnection.h>
 #include <sockhop/SHAccessPolicy.h>
 
+#include <support/Locker.h>
+
 ////////////////////////////////////////////////////////////
 //
 // SHSessionAcceptor

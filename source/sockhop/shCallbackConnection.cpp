@@ -24,7 +24,7 @@ Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-#include <socket.h>
+#include "socket.h"
 #include <sockhop/SHDefaultAccessPolicy.h>
 #include "shCallbackConnection.h"
 #include "shNode.h"

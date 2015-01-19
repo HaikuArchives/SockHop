@@ -20,7 +20,7 @@ Boston, MA  02111-1307, USA.
 **************************************************************************/
 
 
-#include <socket.h>
+#include "socket.h"
 #include <netdb.h>
 #include <string.h>
 #include <stdio.h>

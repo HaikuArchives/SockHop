@@ -25,6 +25,7 @@ Boston, MA  02111-1307, USA.
 
 #include <app/Looper.h>
 #include <app/Messenger.h>
+#include <support/Locker.h>
 
 //Abstract interface for an object that can send and receive BMessages.
 class shMessageStream : public BLooper

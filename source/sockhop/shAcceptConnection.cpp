@@ -64,7 +64,7 @@ BindPort(SHNodeSpec & spec)
          if (listen(ret, 1) == B_NO_ERROR)
          {
             struct sockaddr_in queryAddr;
-            int len = sizeof(queryAddr);
+            socklen_t len = sizeof(queryAddr);
 
             if (getsockname(ret, (struct sockaddr *)&queryAddr, &len) == B_NO_ERROR)
 	        {
@@ -121,7 +121,7 @@ SetupConnection(int acceptSock, SHAccessPolicy * policy)
    if (acceptSock >= 0)
    {
       struct sockaddr_in saAddr;
-      int addrSize = sizeof(saAddr);
+      socklen_t addrSize = sizeof(saAddr);
       int newSockfd = accept(acceptSock, (struct sockaddr *)&saAddr, &addrSize); 
 
       if (newSockfd >= 0)

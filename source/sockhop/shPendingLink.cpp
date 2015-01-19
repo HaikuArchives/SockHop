@@ -75,7 +75,7 @@ GetListeningLocation()
    BMessage pwdMsg;
    pwdMsg.AddString("password", _password);
    pwdMsg.AddPointer(SH_NAME_LINKOPID, _link);   
-   return(SHNodeSpec("<shAcceptLinkPolicy>", "", 0, &pwdMsg));
+   return(SHNodeSpec("<shAcceptLinkPolicy>", "", 0, pwdMsg));
 }
 
 bool

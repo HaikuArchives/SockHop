@@ -20,7 +20,7 @@ Boston, MA  02111-1307, USA.
 **************************************************************************/
 
 
-#include <socket.h>
+#include "socket.h"
 #include <string.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -239,13 +239,13 @@ acceptLoop()
    while(1)
    {
       struct sockaddr_in clientAddr;
-      int size = sizeof(clientAddr);
+      socklen_t size = sizeof(clientAddr);
       int requestSock = accept(_acceptorSock, (struct sockaddr *) &clientAddr, &size);
       if (requestSock >= 0)
       {
           bool closeRequestSock = true;
           struct sockaddr_in saTempAdd;
-          int lLength = sizeof(saTempAdd);
+          socklen_t lLength = sizeof(saTempAdd);
           if (getpeername(requestSock, (struct sockaddr *) &saTempAdd, &lLength) >= 0)
           {
              struct hostent * hePeer = gethostbyaddr((caddr_t)&saTempAdd.sin_addr, sizeof(saTempAdd.sin_addr), AF_INET);  // NULL result is okay here

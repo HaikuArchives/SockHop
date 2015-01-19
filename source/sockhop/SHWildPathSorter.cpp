@@ -25,6 +25,7 @@ Boston, MA  02111-1307, USA.
 #include <malloc.h>
 #include <sockhop/SHWildPathSorter.h>
 #include <sockhop/SHStringMatcher.h>
+#include <support/ClassInfo.h>
 
 // Returns a pointer into the given string that is past any '.' or './' specifiers
 static const char * GoPastInitialCurrentDirectorySpecifiers(const char * startAt);

@@ -23,10 +23,10 @@ Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <storage/Entry.h>
 #include <support/Autolock.h>
 #include <app/Application.h>
-
+#include <support/ClassInfo.h>
 #include "SockHopInternalConstants.h"
 #include <sockhop/SockHopFunctions.h>
 #include "shNode.h"
@@ -825,7 +825,7 @@ MessageReceivedFromElsewhere(BMessage * msg, int32 cid)
 				                       {
 				                          if (spec.CountFlavors() > 0)
 				                          {
-				                             SHDistributableObject * obj = SHCreateDistributableObject(&reArchive);
+				                             SHDistributableObject * obj = SHCreateDistributableObject(reArchive);
 				                             if (obj)
 				                             {
 				                                if (cast_as(obj, SHAccessPolicy))
@@ -894,7 +894,7 @@ MessageReceivedFromElsewhere(BMessage * msg, int32 cid)
                     if (msg->HasString(SH_NAME_SYMLINKS)) 
                     {
                        // Record that we are waiting for the lnk process to complete...
-			           shPendingLink * lnk = new shPendingLink(this, msg, opTag);
+			           shPendingLink * lnk = new shPendingLink(this, *msg, opTag);
 			           if (lnk->Start()) 
 			           {
                           // A BMessage asking the node(s) to allow us to connect to them...
@@ -958,7 +958,7 @@ MessageReceivedFromElsewhere(BMessage * msg, int32 cid)
 			              {
 			                 // This callback will make sure success/failure messages are
 			                 // sent as appropriate when the download completes.
-			                 pendingDownload->AddCallback(new shPendingDownloadCallback(msg));
+			                 pendingDownload->AddCallback(new shPendingDownloadCallback(*msg));
 	                         if (opTag) pendingDownload->AddCallback(new shOpTagCallback(BMessage(SH_INTERNAL_NOOP), &_holdParentTags, opTag));
 			              }
 			              else

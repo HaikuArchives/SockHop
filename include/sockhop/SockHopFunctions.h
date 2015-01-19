@@ -1,4 +1,3 @@
-
 /**************************************************************************
 SockHop (libsockhop.so):  Distributed network programming system for BeOS
 Copyright (C) 1999 by Jeremy Friesner (jaf@chem.ucsd.edu)
@@ -23,6 +22,8 @@ Boston, MA  02111-1307, USA.
 #ifndef _SOCKHOPFUNCTIONS_H_
 #define _SOCKHOPFUNCTIONS_H_
 
+#include <app/Message.h>
+#include <app/Messenger.h>
 #include <sockhop/SHDistributableObject.h>
 #include <sockhop/SHAccessPolicy.h>
 

@@ -20,7 +20,7 @@ Boston, MA  02111-1307, USA.
 **************************************************************************/
 
 #include <stdio.h>
-#include <socket.h>
+#include "socket.h"
 #include "shRawConnection.h"
 
 shRawConnection ::

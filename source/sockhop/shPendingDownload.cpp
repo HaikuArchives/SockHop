@@ -25,6 +25,7 @@ Boston, MA  02111-1307, USA.
 #include <sockhop/SockHopFunctions.h>
 #include <sockhop/SHSorter.h>
 #include <sockhop/SHWorker.h>
+#include <support/ClassInfo.h>
 
 // ------------- shPendingDownloadCallback ------------------------
 

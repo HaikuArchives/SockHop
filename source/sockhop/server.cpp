@@ -30,6 +30,7 @@ Boston, MA  02111-1307, USA.
 #include <sockhop/SockHopConstants.h>
 #include <sockhop/SockHopFunctions.h>
 #include <sockhop/SHDefaultAccessPolicy.h>
+#include <support/ClassInfo.h>
 #include "shNode.h"
 #include "SockHopInternalConstants.h"
 #include "shStraightConnection.h"
@@ -184,7 +185,7 @@ NodeApplication(const BMessage & msg)
          {
              if (addOnSpec.CountFlavors() > 0)  // i.e. are there any flavors in the msg?
              {
-                SHDistributableObject * obj = SHCreateDistributableObject(&policyMsg);
+                SHDistributableObject * obj = SHCreateDistributableObject(policyMsg);
              
                 if (obj)
                 {

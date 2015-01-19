@@ -29,6 +29,7 @@ Boston, MA  02111-1307, USA.
 #include <support/Locker.h>
 #include <support/List.h>
 #include <support/Autolock.h>
+#include <support/ClassInfo.h>
 
 #include <sockhop/SHFlavor.h>
 #include <sockhop/SockHopFunctions.h>

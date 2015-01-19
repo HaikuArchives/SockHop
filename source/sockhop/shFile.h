@@ -23,6 +23,7 @@ Boston, MA  02111-1307, USA.
 #ifndef _SHFILE_H
 #define _SHFILE_H
 
+#include <app/Message.h>
 #include <support/Flattenable.h>
 
 // Adds the file into the given BMessage.  Returns B_NO_ERROR iff successful.
