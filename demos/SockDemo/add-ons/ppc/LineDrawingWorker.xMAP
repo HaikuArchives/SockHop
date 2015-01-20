@@ -1,0 +1,417 @@
+File:    1	"MWOBPPC "
+File:    7	"libbe.so"
+File:    8	"libroot.so"
+File:    9	"libsockhop.so"
+File:   10	"/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWindow.cpp"
+File:   11	"/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWorker.cpp"
+
+Files that were not referenced:
+"common/start_dyn.c"
+
+Code section, size = 6244 bytes
+000000	PR 	.__sinit									file = "*Linker-Generated*"
+00001C	PR 	.__destroy_global_chain						file = "common/global_destructor_chain.c"
+000070	PR 	.__RTOC										file = "common/init_term_dyn.c"
+000078	PR 	._init_routine_
+0000C8	PR 	._term_routine_
+0000F8	PR 	.__ct__17LineDrawingWindowF5BRectPCc10BMessenger	file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWindow.cpp"
+000258	PR 	.__dt__17LineDrawingWindowFv
+000340	PR 	.MessageReceived__17LineDrawingWindowFP8BMessage
+0003A8	PR 	.DrawThreadStub__17LineDrawingWindowFPv
+0003D4	PR 	.SetTempo__17LineDrawingWindowFl
+00042C	PR 	.DrawThread__17LineDrawingWindowFv
+0006B8	PR 	.RandomPointIn__17LineDrawingWindowCFRC5BRect
+00078C	PR 	.__ct__17LineDrawingWorkerFPCc				file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWorker.cpp"
+000870	PR 	.__ct__17LineDrawingWorkerFP8BMessage
+0009A4	PR 	.__dt__17LineDrawingWorkerFv
+000B38	PR 	.Instantiate__17LineDrawingWorkerFP8BMessage
+000BB4	PR 	.GetAddOnSpec__17LineDrawingWorkerCFR10SHFileSpec
+000CF8	PR 	.GetName__17LineDrawingWorkerCFv
+000D00	PR 	.Archive__17LineDrawingWorkerCFP8BMessageb
+000D80	PR 	.MessageReceived__17LineDrawingWorkerFP8BMessage
+0011D0	PR 	.IsInterestedIn__17LineDrawingWorkerFP8BMessage
+0011FC	GL 	.__register_fragment						file = "*Linker-Generated*"
+001214	GL 	.__unregister_fragment
+00122C	GL 	.ceil
+001244	GL 	.rand
+00125C	GL 	.LockWithTimeout__7BLooperFx
+001274	GL 	.Frame__7BWindowCFv
+00128C	GL 	.BeginLineArray__5BViewFl
+0012A4	GL 	.AddLine__5BViewF6BPoint6BPoint9rgb_color
+0012BC	GL 	.EndLineArray__5BViewFv
+0012D4	GL 	.Unlock__7BLooperFv
+0012EC	GL 	.snooze
+001304	GL 	.real_time_clock
+00131C	GL 	.__ct__8BMessageFUl
+001334	GL 	.AddInt32__8BMessageFPCcl
+00134C	GL 	.SendMessage__10BMessengerCFP8BMessageP8BHandlerx
+001364	GL 	.__dt__8BMessageFv
+00137C	GL 	.suspend_thread
+001394	GL 	.resume_thread
+0013AC	GL 	.spawn_thread
+0013C4	GL 	.wait_for_thread
+0013DC	GL 	.__dt__10BMessengerFv
+0013F4	GL 	.__dt__7BWindowFv
+00140C	GL 	.__dl__FPv
+001424	GL 	.__ct__7BWindowF5BRectPCc11window_typeUlUl
+00143C	GL 	.__ct__10BMessengerFRC10BMessenger
+001454	GL 	.__nw__FUl
+00146C	GL 	.__ct__5BViewF5BRectPCcUlUl
+001484	GL 	.AddChild__7BWindowFP5BViewP5BView
+00149C	GL 	.__ct__8BMessageFv
+0014B4	GL 	.PostMessage__7BLooperFP8BMessage
+0014CC	GL 	.GetNodePath__11SHComponentCFv
+0014E4	GL 	.AddString__8BMessageFPCcPCc
+0014FC	GL 	.GetNodeMessenger__11SHComponentCFv
+001514	GL 	.Lock__7BLooperFv
+00152C	GL 	.__dla__FPv
+001544	GL 	.__dt__8SHWorkerFv
+00155C	GL 	.Archive__8SHWorkerCFP8BMessageb
+001574	GL 	.GetAddOnSpec__21SHDistributableObjectCFR10SHFileSpec
+00158C	GL 	.__ct__8SHFlavorFPCcUlb
+0015A4	GL 	.AddFlavor__10SHFileSpecFRC8SHFlavor
+0015BC	GL 	.__dt__8SHFlavorFv
+0015D4	GL 	.printf
+0015EC	GL 	.__ct__7BScreenF9screen_id
+001604	GL 	.Frame__7BScreenFv
+00161C	GL 	.__dt__7BScreenFv
+001634	GL 	.GetMessenger__8SHWorkerCFv
+00164C	GL 	.Activate__7BWindowFb
+001664	GL 	.SendMessage__10BMessengerCFUlP8BHandler
+00167C	GL 	.FindInt32__8BMessageCFPCcPl
+001694	GL 	.PrintToStream__8BMessageCFv
+0016AC	GL 	.validate_instantiation__FP8BMessagePCc
+0016C4	GL 	.__ct__8SHWorkerFP8BMessage
+0016DC	GL 	.FindString__8BMessageCFPCcPPCc
+0016F4	GL 	.system_time
+00170C	GL 	.sprintf
+001724	GL 	.strlen
+00173C	GL 	.__nwa__FUl
+001754	GL 	.strcpy
+00176C	GL 	.__ct__8SHWorkerFv
+001784	GL 	.__ptr_glue									file = "ppc/runtime.c"
+001798	TI 	@7											file = "common/global_destructor_chain.c"
+0017A4	TI 	@2											file = "common/init_term_dyn.c"
+0017B0	TI 	@4
+0017BC	TI 	@129										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWindow.cpp"
+0017C8	TI 	@136
+0017D4	TI 	@143
+0017E0	TI 	@145
+0017EC	TI 	@149
+0017F8	TI 	@178
+001804	TI 	@185
+001810	TI 	@122										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWorker.cpp"
+00181C	TI 	@130
+001828	TI 	@145
+001834	TI 	@153
+001840	TI 	@170
+00184C	TI 	@175
+001858	TI 	@241
+
+Data section, size = 2236 bytes (TOC anchor = 000000)
+000000	TC 	PrintToStream__8BMessageCFv					file = "*Linker-Generated*"
+000004	TC 	Frame__7BScreenFv
+000008	TC 	__ct__5BViewF5BRectPCcUlUl
+00000C	TC 	BeginLineArray__5BViewFl
+000010	TC 	Lock__7BLooperFv
+000014	TC 	Activate__7BWindowFb
+000018	TC 	AddInt32__8BMessageFPCcl
+00001C	TC 	PostMessage__7BLooperFP8BMessage
+000020	TC 	__ct__10BMessengerFRC10BMessenger
+000024	TC 	Unlock__7BLooperFv
+000028	TC 	LockWithTimeout__7BLooperFx
+00002C	TC 	__dt__10BMessengerFv
+000030	TC 	__ct__8BMessageFUl
+000034	TC 	AddChild__7BWindowFP5BViewP5BView
+000038	TC 	EndLineArray__5BViewFv
+00003C	TC 	validate_instantiation__FP8BMessagePCc
+000040	TC 	AddLine__5BViewF6BPoint6BPoint9rgb_color
+000044	TC 	__dt__7BWindowFv
+000048	TC 	SendMessage__10BMessengerCFUlP8BHandler
+00004C	TC 	__dt__7BScreenFv
+000050	TC 	SendMessage__10BMessengerCFP8BMessageP8BHandlerx
+000054	TC 	Frame__7BWindowCFv
+000058	TC 	__dt__8BMessageFv
+00005C	TC 	__ct__7BScreenF9screen_id
+000060	TC 	__ct__8BMessageFv
+000064	TC 	FindInt32__8BMessageCFPCcPl
+000068	TC 	AddString__8BMessageFPCcPCc
+00006C	TC 	__ct__7BWindowF5BRectPCc11window_typeUlUl
+000070	TC 	FindString__8BMessageCFPCcPPCc
+000074	TC 	suspend_thread
+000078	TC 	sprintf
+00007C	TC 	ceil
+000080	TC 	__nwa__FUl
+000084	TC 	printf
+000088	TC 	__dl__FPv
+00008C	TC 	__register_fragment
+000090	TC 	strcpy
+000094	TC 	strlen
+000098	TC 	resume_thread
+00009C	TC 	rand
+0000A0	TC 	real_time_clock
+0000A4	TC 	wait_for_thread
+0000A8	TC 	spawn_thread
+0000AC	TC 	system_time
+0000B0	TC 	__unregister_fragment
+0000B4	TC 	__nw__FUl
+0000B8	TC 	__dla__FPv
+0000BC	TC 	snooze
+0000C0	TC 	__ct__8SHWorkerFP8BMessage
+0000C4	TC 	GetNodeMessenger__11SHComponentCFv
+0000C8	TC 	__ct__8SHWorkerFv
+0000CC	TC 	__dt__8SHFlavorFv
+0000D0	TC 	AddFlavor__10SHFileSpecFRC8SHFlavor
+0000D4	TC 	__dt__8SHWorkerFv
+0000D8	TC 	GetMessenger__8SHWorkerCFv
+0000DC	TC 	GetNodePath__11SHComponentCFv
+0000E0	TC 	__ct__8SHFlavorFPCcUlb
+0000E4	TC 	Archive__8SHWorkerCFP8BMessageb
+0000E8	TC 	GetAddOnSpec__21SHDistributableObjectCFR10SHFileSpec
+0000EC	TC 	__global_destructor_chain
+0000F0	TC 	__exception_table_end__
+0000F4	TC 	__exception_table_start__
+0000F8	TC 	__data_end__
+0000FC	TC 	__data_start__
+000100	TC 	__code_end__
+000104	TC 	__code_start__
+000108	TC 	DrawThreadStub__17LineDrawingWindowFPv
+00010C	TC 	__vt__17LineDrawingWindow
+000110	TC 	B_MAIN_SCREEN_ID
+000114	TC 	__vt__17LineDrawingWorker
+000118	TC 	@176										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWindow.cpp"
+00011C	TC 	@142
+000120	TC 	@127
+000124	TC 	@236										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWorker.cpp"
+000128	TC 	@235
+00012C	TC 	@234
+000130	TC 	@168
+000134	TC 	@167
+000138	TC 	@166
+00013C	TC 	@165
+000140	TC 	@151
+000144	TC 	@143
+000148	TC 	@142
+00014C	TC 	@140
+000150	TC 	@128
+000154	TC 	@127
+000158	TD 	fragmentID									file = "common/init_term_dyn.c"
+000160	TD 	@183										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWindow.cpp"
+000168	TD 	@126
+00016C	TD 	@125
+000170	TD 	@124
+000174	TD 	@141										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWorker.cpp"
+000178	TD 	@239
+000180	TD 	@233
+000184	TD 	@232
+000188	TD 	@231
+00018C	DS 	_term_routine_								file = "common/init_term_dyn.c"
+000194	DS 	_init_routine_
+00019C	DS 	RandomPointIn__17LineDrawingWindowCFRC5BRect	file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWindow.cpp"
+0001A4	DS 	DrawThread__17LineDrawingWindowFv
+0001AC	DS 	SetTempo__17LineDrawingWindowFl
+0001B4	DS 	MessageReceived__17LineDrawingWindowFP8BMessage
+0001BC	DS 	DrawThreadStub__17LineDrawingWindowFPv
+0001C4	DS 	__dt__17LineDrawingWindowFv
+0001CC	DS 	__ct__17LineDrawingWindowF5BRectPCc10BMessenger
+0001D4	DS 	IsInterestedIn__17LineDrawingWorkerFP8BMessage	file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWorker.cpp"
+0001DC	DS 	MessageReceived__17LineDrawingWorkerFP8BMessage
+0001E4	DS 	Archive__17LineDrawingWorkerCFP8BMessageb
+0001EC	DS 	GetName__17LineDrawingWorkerCFv
+0001F4	DS 	GetAddOnSpec__17LineDrawingWorkerCFR10SHFileSpec
+0001FC	DS 	Instantiate__17LineDrawingWorkerFP8BMessage
+000204	DS 	__dt__17LineDrawingWorkerFv
+00020C	DS 	__ct__17LineDrawingWorkerFP8BMessage
+000214	DS 	__ct__17LineDrawingWorkerFPCc
+00021C	TB 	@128										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWindow.cpp"
+000270	TB 	@135
+000282	TB 	@177
+000294	TB 	@121										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWorker.cpp"
+0002D2	TB 	@129
+000310	TB 	@144
+000336	TB 	@152
+000348	TB 	@169
+000368	TB 	@240
+0003B2	RW 	@127										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWindow.cpp"
+0003BF	RW 	@142
+0003E5	RW 	@176
+0003EC	RW 	@186
+0003FE	RW 	@188
+00040C	RW 	__RTTI__11BArchivable
+000414	RW 	@189
+000420	RW 	@190
+00042C	RW 	__RTTI__8BHandler
+000434	RW 	@191
+00043C	RW 	@192
+000450	RW 	__RTTI__7BLooper
+000458	RW 	@193
+000460	RW 	@194
+00047C	RW 	__RTTI__7BWindow
+000484	RW 	@187
+0004A8	RW 	__RTTI__17LineDrawingWindow
+0004B0	RW 	__vt__17LineDrawingWindow
+000588	RW 	@127										file = "/boot/home/projects/SockHop/demos/SockDemo/source/LineDrawingWorker/LineDrawingWorker.cpp"
+000590	RW 	@128
+0005A6	RW 	@140
+0005AB	RW 	@142
+0005B2	RW 	@143
+0005BF	RW 	@151
+0005D1	RW 	@165
+0005EF	RW 	@166
+00065E	RW 	@167
+00067C	RW 	@168
+0006ED	RW 	@234
+000734	RW 	@235
+00073C	RW 	@236
+000782	RW 	@244
+000790	RW 	__RTTI__11BArchivable
+000798	RW 	@245
+0007B0	RW 	@246
+0007BC	RW 	__RTTI__21SHDistributableObject
+0007C4	RW 	@247
+0007D0	RW 	@248
+0007E4	RW 	__RTTI__11SHComponent
+0007EC	RW 	@249
+0007F8	RW 	@250
+000814	RW 	__RTTI__8SHWorker
+00081C	RW 	@243
+000840	RW 	__RTTI__17LineDrawingWorker
+000848	RW 	__vt__17LineDrawingWorker
+0008B4	RW 	__global_destructor_chain					file = "common/global_destructor_chain.c"
+
+Import container "libbe.so"
+Current Version = 00000000, Old Implementation = 00000000
+000000	DS 	PrintToStream__8BMessageCFv
+000001	DS 	Frame__7BScreenFv
+000002	DS 	__ct__5BViewF5BRectPCcUlUl
+000003	DS 	BeginLineArray__5BViewFl
+000004	DS 	Perform__7BWindowFUlPv
+000005	DS 	Lock__7BLooperFv
+000006	DS 	RemoveCommonFilter__7BLooperFP14BMessageFilter
+000007	DS 	MenusEnded__7BWindowFv
+000008	DS 	_ReservedWindow5__7BWindowFv
+000009	DS 	_ReservedHandler4__8BHandlerFv
+00000A	DS 	_ReservedWindow4__7BWindowFv
+00000B	DS 	_ReservedHandler1__8BHandlerFv
+00000C	DS 	_ReservedWindow3__7BWindowFv
+00000D	DS 	_ReservedWindow8__7BWindowFv
+00000E	DS 	_ReservedWindow2__7BWindowFv
+00000F	DS 	_ReservedWindow7__7BWindowFv
+000010	DS 	_ReservedWindow1__7BWindowFv
+000011	DS 	_ReservedWindow6__7BWindowFv
+000012	DS 	_ReservedHandler3__8BHandlerFv
+000013	DS 	WindowActivated__7BWindowFb
+000014	DS 	WorkspacesChanged__7BWindowFUlUl
+000015	DS 	Activate__7BWindowFb
+000016	DS 	AddInt32__8BMessageFPCcl
+000017	DS 	_ReservedArchivable1__11BArchivableFv
+000018	DS 	task_looper__7BWindowFv
+000019	DS 	PostMessage__7BLooperFP8BMessage
+00001A	DS 	_ReservedHandler2__8BHandlerFv
+00001B	DS 	GetSupportedSuites__7BWindowFP8BMessage
+00001C	DS 	__ct__10BMessengerFRC10BMessenger
+00001D	DS 	DispatchMessage__7BWindowFP8BMessageP8BHandler
+00001E	DS 	QuitRequested__7BWindowFv
+00001F	DS 	_ReservedArchivable3__11BArchivableFv
+000020	DS 	Unlock__7BLooperFv
+000021	DS 	MenusBeginning__7BWindowFv
+000022	DS 	LockWithTimeout__7BLooperFx
+000023	DS 	ScreenChanged__7BWindowF5BRect11color_space
+000024	DS 	ResolveSpecifier__7BWindowFP8BMessagelP8BMessagelPCc
+000025	DS 	__dt__10BMessengerFv
+000026	DS 	__ct__8BMessageFUl
+000027	DS 	FrameResized__7BWindowFff
+000028	DS 	AddChild__7BWindowFP5BViewP5BView
+000029	DS 	AddCommonFilter__7BLooperFP14BMessageFilter
+00002A	DS 	EndLineArray__5BViewFv
+00002B	DS 	validate_instantiation__FP8BMessagePCc
+00002C	DS 	Minimize__7BWindowFb
+00002D	DS 	AddLine__5BViewF6BPoint6BPoint9rgb_color
+00002E	DS 	Perform__11BArchivableFUlPv
+00002F	DS 	SetCommonFilterList__7BLooperFP5BList
+000030	DS 	Archive__7BWindowCFP8BMessageb
+000031	DS 	__dt__7BWindowFv
+000032	DS 	Hide__7BWindowFv
+000033	DS 	Quit__7BWindowFv
+000034	DS 	SendMessage__10BMessengerCFUlP8BHandler
+000035	DS 	Show__7BWindowFv
+000036	DS 	__dt__7BScreenFv
+000037	DS 	SendMessage__10BMessengerCFP8BMessageP8BHandlerx
+000038	DS 	FrameMoved__7BWindowF6BPoint
+000039	DS 	Frame__7BWindowCFv
+00003A	DS 	_ReservedLooper1__7BLooperFv
+00003B	DS 	_ReservedLooper4__7BLooperFv
+00003C	DS 	_ReservedLooper2__7BLooperFv
+00003D	DS 	Zoom__7BWindowF6BPointff
+00003E	DS 	_ReservedLooper5__7BLooperFv
+00003F	DS 	__dt__8BMessageFv
+000040	DS 	__ct__7BScreenF9screen_id
+000041	DS 	__ct__8BMessageFv
+000042	DS 	_ReservedLooper6__7BLooperFv
+000043	DS 	_ReservedLooper3__7BLooperFv
+000044	DS 	FindInt32__8BMessageCFPCcPl
+000045	DS 	AddString__8BMessageFPCcPCc
+000046	RW 	B_MAIN_SCREEN_ID
+000047	DS 	_ReservedArchivable2__11BArchivableFv
+000048	DS 	SetNextHandler__8BHandlerFP8BHandler
+000049	DS 	RemoveFilter__8BHandlerFP14BMessageFilter
+00004A	DS 	ConvertToMessage__7BWindowFPvl
+00004B	DS 	__ct__7BWindowF5BRectPCc11window_typeUlUl
+00004C	DS 	WorkspaceActivated__7BWindowFlb
+00004D	DS 	SetFilterList__8BHandlerFP5BList
+00004E	DS 	AddFilter__8BHandlerFP14BMessageFilter
+00004F	DS 	FindString__8BMessageCFPCcPPCc
+000050	DS 	Run__7BWindowFv
+
+Import container "libroot.so"
+Current Version = 00000000, Old Implementation = 00000000
+000051	DS 	suspend_thread
+000052	DS 	sprintf
+000053	DS 	ceil
+000054	DS 	__nwa__FUl
+000055	DS 	printf
+000056	DS 	__dl__FPv
+000057	DS 	__register_fragment
+000058	DS 	strcpy
+000059	DS 	strlen
+00005A	DS 	resume_thread
+00005B	DS 	rand
+00005C	DS 	real_time_clock
+00005D	DS 	wait_for_thread
+00005E	DS 	spawn_thread
+00005F	DS 	system_time
+000060	DS 	__unregister_fragment
+000061	DS 	__nw__FUl
+000062	DS 	__dla__FPv
+000063	DS 	snooze
+
+Import container "libsockhop.so"
+Current Version = 00000000, Old Implementation = 00000000
+000064	DS 	Stop__8SHWorkerFv
+000065	DS 	_SHDistributableObject1__21SHDistributableObjectFv
+000066	DS 	_SHComponent1__11SHComponentFv
+000067	DS 	_SHComponent4__11SHComponentFv
+000068	DS 	__ct__8SHWorkerFP8BMessage
+000069	DS 	_SHWorker1__8SHWorkerFv
+00006A	DS 	Start__8SHWorkerFv
+00006B	DS 	_SHWorker2__8SHWorkerFv
+00006C	DS 	GetNodeMessenger__11SHComponentCFv
+00006D	DS 	_SHComponent2__11SHComponentFv
+00006E	DS 	__ct__8SHWorkerFv
+00006F	DS 	__dt__8SHFlavorFv
+000070	DS 	_SHDistributableObject4__21SHDistributableObjectFv
+000071	DS 	_SHDistributableObject2__21SHDistributableObjectFv
+000072	DS 	AddFlavor__10SHFileSpecFRC8SHFlavor
+000073	DS 	_SHDistributableObject3__21SHDistributableObjectFv
+000074	DS 	_SHComponent3__11SHComponentFv
+000075	DS 	setNode__8SHWorkerFP6shNode
+000076	DS 	__dt__8SHWorkerFv
+000077	DS 	GetMessenger__8SHWorkerCFv
+000078	DS 	GetNodePath__11SHComponentCFv
+000079	DS 	_SHWorker3__8SHWorkerFv
+00007A	DS 	__ct__8SHFlavorFPCcUlb
+00007B	DS 	Archive__8SHWorkerCFP8BMessageb
+00007C	DS 	GetAddOnSpec__21SHDistributableObjectCFR10SHFileSpec
+00007D	DS 	_SHWorker4__8SHWorkerFv
+
+Removed unused TOC-reload slots:   0x00000000
