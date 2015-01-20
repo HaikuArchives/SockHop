@@ -1,6 +1,6 @@
 
 /**************************************************************************
-SockHop (libsockhop.so):  Distributed network programming system for BeOS
+SockHop (sockhop):  Distributed network programming system for BeOS
 Copyright (C) 1999 by Jeremy Friesner (jaf@chem.ucsd.edu)
 
 This library is free software; you can redistribute it and/or 
@@ -290,26 +290,26 @@ int main(int argc, char ** argv, char ** env)
    {
       printf("===============================================================================\n");
       printf("=\n");
-      printf("= Usage:  libsockhop.so [policy=filename] [param1=value1] [param2=value2] [...]\n");
+      printf("= Usage:  sockhop [policy=filename] [param1=value1] [param2=value2] [...]\n");
 	  printf("= Here are some valid example invocations:\n");
-	  printf("= \n=   libsockhop.so\n");
+	  printf("= \n=   sockhop\n");
 	  printf("=     (Starts a server process with the default access policy, and NO PASSWORD\n");
 	  printf("=      REQUIRED!  While this makes testing easy, it's roughly equivalent to\n");
 	  printf("=      running a telnet daemon with no password required, so only do this if you\n");
 	  printf("=      are on an isolated network!)\n");
-	  printf("= \n=   libsockhop.so password=topsecret\n");
+	  printf("= \n=   sockhop password=topsecret\n");
 	  printf("=     (Starts a server process with the default access policy, but will only\n");
 	  printf("=      allow connections that supply the password 'topsecret' to connect)\n");
-	  printf("= \n=   libsockhop.so password=topsecret port=2996\n");
+	  printf("= \n=   sockhop password=topsecret port=2996\n");
 	  printf("=     (Starts a server process with the default access policy, listening on\n");
 	  printf("=      port 2996, that only allow connections that supply the password\n");
 	  printf("=      'topsecret' to connect)\n");
-	  printf("= \n=   libsockhop.so port=2996 password=topsecret debug=1\n");
+	  printf("= \n=   sockhop port=2996 password=topsecret debug=1\n");
 	  printf("=     (Same as the previous example, but turns on debug printing also)\n");
-	  printf("= \n=   libsockhop.so priority=15 encoding=zlibheavy\n");
+	  printf("= \n=   sockhop priority=15 encoding=zlibheavy\n");
 	  printf("=     (Starts a server with all threads running at priority 15, and with\n");
 	  printf("=      zlib level 6 compression applied to all TCP-transmitted BMessages)\n");
-	  printf("= \n=   libsockhop.so policy=myPolicyAddOnFile class=myPolicy\n");
+	  printf("= \n=   sockhop policy=myPolicyAddOnFile class=myPolicy\n");
 	  printf("=                 myParam=aNiceValue anotherParam=aMeanValue\n");
 	  printf("=     (Starts a server with your own custom policy add-on, and adds the typed\n");
 	  printf("=      in parameters as strings to the add-ons rehydration/archive BMessage.\n");
@@ -323,7 +323,7 @@ int main(int argc, char ** argv, char ** env)
    else
    {
       // defaults
-      if (argc <= 1) printf("(Note:  Run libsockhop.so -help for info on command line arguments)\n");
+      if (argc <= 1) printf("(Note: Run sockhop -help for info on command line arguments)\n");
       
       // Instantiate our AccessPolicy.
       SHAccessPolicy * policy = NULL;
