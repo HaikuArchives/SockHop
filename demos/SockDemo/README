@@ -1,0 +1,132 @@
+
+This file contains a quick tutorial on how to set up and run the SockDemo program.
+The SockDemo program, and the five add-ons found in the directories underneath it,
+are all placed into the public domain.
+
+1.  What the SockDemo does.
+
+	SockDemo doesn't have a really useful purpose; instead, it exists mainly
+	to demonstrate the sort of things a program using SockHop can do.  
+
+	SockDemo lets you create a tree-shaped network of computing "nodes"
+	across any or all of the SockHop-running computers you have access to.
+	After you have set up this network, you can then send add-ons objects
+	to these nodes to be run remotely.  While the remote add-ons are running,
+	you can send messages to them to control their behavior, and they in
+	turn send messages back to report on their progress.
+	
+	The add-ons provided for use with the SockDemo program are just graphical
+	toys;  they open a window and draw an animated sequence of shapes
+	into it.  They also send messages back to the SockDemo GUI every few 
+	seconds, telling it how many shapes they draw per second.  The SockDemo
+	GUI will report the average total shapes per second for your whole
+	network, so that you can see the increase in throughput due to 
+	parallelization.
+	
+	Furthermore, to demonstrate how your program can interact with the
+	remote threads in real time, the SockDemo allows you to change the 
+	speed at which the remote threads draw shapes.
+	
+2.  How to prepare your "slave" machines.
+
+	The first thing you have to do, if you want to run threads on multiple
+	computers, is to make sure a SockHop server is running on each computer
+	that will be used.  To do this, install SockHop on each computer.  The
+	only file that is necessary to install on each "slave" computer is 
+	libsockhop.so.  Once you have done this, you need to execute libsockhop.so
+	from a shell on each slave computer.  It's cleaner if you execute
+	the server in its own directory, since it will write files to its 
+	current directory.  Try something like this:
+	
+	mkdir ~/SockHopServerFiles
+	cd ~/SockHopServerFiles
+	~/config/lib/libsockhop.so 
+	
+	If you are security-conscious, you will want to run the server with
+	password-checking enabled:
+
+	~/config/lib/libsockhop.so password=ASecretPassword	
+
+	(And if you want to monitor what the server processes are doing, add a
+	 debug=1 parameter to the line above)
+		
+3.  How to assemble a node tree using the SockDemo GUI.
+
+	Now that you have servers running on every computer where you wish to
+	run threads, it's time to actually create the node tree.  To do this,
+	run the appropriate SockDemo executable (SockDemo.x86 or SockDemo.ppc)
+	on your "master" computer.  It will bring up a GUI showing the current state
+	of the network.  You will see that currently, the Node Tree only contains a 
+	root node, named "/".
+	
+	To add a child to the root node, click on the "/" in the tree view.  
+	Once the "/" is highlighted, you should then type in specifications 
+	for your new node into the Node Specification area.  An example of what
+	to type in might look like this (without the comments, of course):
+	
+	Node Name:	ChildOne			// Pick any name you like
+	Host Name:	beos5.mydomain.com	// Internet hostname of slave computer
+	Port:		2958				// TCP Port number: 2958 is default
+	Password:	ASecretPassword		// Necessary if slave expects a password
+		
+	The password field may remain blank if didn't tell your servers to require 
+	a password; the host name field may remain blank as well, in which 
+	case the new node will be created as a local thread inside SockDemo
+	application's team.
+	
+	Once you have filled out these fields, click on the "Add Node To Tree"
+	button below.  If everything goes well, your new node should show up
+	in the Node Tree view.  Repeat this process as necessary to add as many
+	nodes as you wish--be sure to click on each new node's parent in the 
+	Node Tree *before* you enter the new node's information!
+
+	Once you have finished creating the node tree, you may wish to save
+	your tree configuration to disk.  This can be done from the Project
+	menu.  Then, the next time you run SockDemo, you will be able to set
+	up your node tree just by choosing "Open Node Tree..." from the menu.
+		
+4.  How to run SockDemo add-ons across your network.
+
+	Once you have your node tree set up, it's easy to start and control
+	drawing threads on any computer on your network.  First, highlight
+	one or more of the nodes in the Node Tree view of the SockDemo GUI.
+	Next, use the Tracker to open the "add-ons" directory inside the
+	SockDemo directory.  Then open the directory underneath that that
+	corresponds to the computer architecture the SockDemo GUI is running
+	on--i.e., if you are on an Intel PC, open the "x86" directory, otherwise
+	open the "ppc" directory.
+	
+	Now just drag one of the add-on files into the SockDemo window.
+	When you do this, an instance of the add-on will begin running on each
+	of the nodes you highlighted in the Node Tree.  The interesting thing
+	to notice here is that the add-on will run even if the target nodes
+	did not have the add-on file available locally, and even if the target
+	nodes are not using the same executable format as that of the add-on
+	you dragged in.  This is because SockHop will automagically download
+	the correct add-on executable to each node, if it needs it.
+	
+5.	Other things you can do with SockDemo.
+
+	In addition to starting animated add-on objects with SockDemo, you can
+	also use the SockDemo GUI to control their behavior.  For example, if
+	you select any of the options in the "Tempo" menu, you can change the
+	speed at which all the windows draw their shapes.  If you double click on
+         an add-on's listing in the "Selected Workers" listview, it will cause that worker
+         to bring it's window to the front.  Also you can remove the add-on windows 
+         remotely by highlighting their names in the "Workers on Selected Node" area, 
+         and clicking the "Delete Selected Workers" button.  Lastly, the SockDemo 
+         GUI "knows" when a window has been closed (manually) on a remote node, 
+         and will update its display appropriately.
+	
+6.  If you want to make your own SockDemo add-ons
+
+	The SockDemo add-ons' source code is available in the "source" directory
+	under SockDemo.  The easiest way to make your own SockDemo add-on is to
+	modify these files.  They aren't well documented, but they are simple 
+	enough that by examining them and the SockHop API documentation, they
+	can be understood. 
+	
+Please email any questions or comments to me at jfriesne@ucsd.edu.
+
+-Jeremy
+

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sockhop/SockHop.h>
-#include "../../sockhop/SockHopInternalConstants.h"
+#include "../../libsockhop/SockHopInternalConstants.h"
 #include "../4/SHBitChordSorter.h"
 #include "../6/SHTestWorker.h"
 
@@ -46,7 +46,7 @@ public:
 
    void SendLineMessage(BMessage * msg)
    {
-      _connection.SendMessageToAllSessions(msg);
+      _connection.SendMessageToAllSessions(*msg);
    }
       
    virtual void MessageReceived(BMessage * msg)
