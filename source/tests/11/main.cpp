@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sockhop/SockHop.h>
-#include "../../sockhop/SockHopInternalConstants.h"
+#include "../../libsockhop/SockHopInternalConstants.h"
 #include "../4/SHBitChordSorter.h"
 #include "../6/SHTestWorker.h"
 

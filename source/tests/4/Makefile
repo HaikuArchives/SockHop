@@ -5,14 +5,14 @@
 ## architecture of Haiku.
 
 # The name of the binary.
-NAME = SockHopTest4
+NAME = libshbitchordsorter.so
 
 # The type of binary, must be one of:
 #	APP:	Application
 #	SHARED:	Shared library or add-on
 #	STATIC:	Static library archive
 #	DRIVER: Kernel driver
-TYPE = APP
+TYPE = SHARED
 
 # 	If you plan to use localization, specify the application's MIME signature.
 APP_MIME_SIG = 
@@ -54,14 +54,14 @@ RSRCS =
 #	- 	if your library does not follow the standard library naming scheme,
 #		you need to specify the path to the library and it's name.
 #		(e.g. for mylib.a, specify "mylib.a" or "path/mylib.a")
-LIBS = sockhop
+LIBS = sockhop be network
 
 #	Specify additional paths to directories following the standard libXXX.so
 #	or libXXX.a naming scheme. You can specify full paths or paths relative
 #	to the Makefile. The paths included are not parsed recursively, so
 #	include all of the paths where libraries must be found. Directories where
 #	source files were specified are	automatically included.
-LIBPATHS = ../../sockhop/objects
+LIBPATHS = ../../libsockhop/objects
 
 #	Additional paths to look for system headers. These use the form
 #	"#include <header>". Directories that contain the files in SRCS are
